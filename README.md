@@ -1,20 +1,78 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Gavyansh Premium Desi Cow Ghee
 
-# Run and deploy your AI Studio app
+E-commerce website for Gavyansh Vedic Ghee – premium A2 Desi Cow Ghee, traditionally churned using the Bilona method.
 
-This contains everything you need to run your app locally.
+## Features
 
-View your app in AI Studio: https://ai.studio/apps/4d3f406a-0962-46e6-84dc-07c1e31c9f30
+- **Products**: Browse A2 Vedic Bilona Ghee and Gir Cow Ghee
+- **Cart**: Add to cart, quantity control, localStorage persistence
+- **Checkout**: Place orders with customer details; email confirmations (when configured)
+- **Contact**: Contact form with backend submission and email alerts
+- **Order & Contact Storage**: Data saved locally in `data/` for records
+
+## Prerequisites
+
+- Node.js 18+
+- npm or yarn
+
+## Setup
+
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+2. **Configure environment**
+   - Copy `.env.example` to `.env`
+   - Set `EMAIL_USER` and `EMAIL_PASS` (Gmail App Password) for order & contact emails
+   - For Gmail 2FA: use an [App Password](https://support.google.com/accounts/answer/185833)
 
 ## Run Locally
 
-**Prerequisites:**  Node.js
+### Development (hot reload)
+```bash
+npm run dev
+```
+Opens at **http://localhost:3000**
 
+### Production build & serve (local deployment)
+```bash
+npm run serve
+```
+Builds the frontend and runs the server in production mode at **http://localhost:3000**
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+### Build only
+```bash
+npm run build
+```
+
+### Start production server (after build)
+```bash
+npm run start
+```
+
+## Backend API
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/health` | GET | Server health check |
+| `/api/products` | GET | Product catalog |
+| `/api/checkout` | POST | Place order |
+| `/api/contact` | POST | Submit contact form |
+
+## Data Storage
+
+- **Orders**: `data/orders.json` (created on first order)
+- **Contacts**: `data/contacts.json` (created on first submission)
+- **Products**: `data/products.json` (editable without code changes)
+
+## Project Structure
+
+```
+├── server/           # Backend API handlers
+│   └── api/
+├── src/              # React frontend
+├── data/             # JSON storage (orders, contacts, products)
+├── server.ts         # Express server entry
+└── vite.config.ts
+```

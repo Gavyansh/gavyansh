@@ -1,9 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'motion/react';
-import { Mail, Phone, MapPin, MessageCircle, Clock } from 'lucide-react';
+import { Mail, Phone, MapPin, MessageCircle, Clock, CheckCircle2, Loader2 } from 'lucide-react';
 
 const Contact = () => {
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setSubmitStatus('idle');
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok && data.success) {
+        setSubmitStatus('success');
+        setFormData({ name: '', email: '', phone: '', message: '' });
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch {
+      setSubmitStatus('error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
   return (
     <div className="pt-32 pb-24">
       <Helmet>
@@ -121,12 +155,27 @@ const Contact = () => {
               />
             </div>
 
-            <form className="bg-white p-10 rounded-[40px] shadow-xl border border-ghee-gold/5 space-y-6">
+            <form onSubmit={handleSubmit} className="bg-white p-10 rounded-[40px] shadow-xl border border-ghee-gold/5 space-y-6">
+              {submitStatus === 'success' && (
+                <div className="flex items-center gap-2 text-emerald-600 bg-emerald-50 px-4 py-3 rounded-2xl">
+                  <CheckCircle2 size={20} />
+                  <span className="font-medium">Thank you! We will get back to you soon.</span>
+                </div>
+              )}
+              {submitStatus === 'error' && (
+                <div className="text-red-600 bg-red-50 px-4 py-3 rounded-2xl font-medium">
+                  Something went wrong. Please try again or reach us at info1gavyansh@gmail.com
+                </div>
+              )}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-xs font-bold text-ghee-gold uppercase tracking-widest mb-2">Full Name</label>
                   <input
+                    required
                     type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
                     className="w-full bg-ghee-warm border-none rounded-2xl px-6 py-4 focus:ring-2 focus:ring-ghee-gold transition-all"
                     placeholder="John Doe"
                   />
@@ -134,26 +183,46 @@ const Contact = () => {
                 <div>
                   <label className="block text-xs font-bold text-ghee-gold uppercase tracking-widest mb-2">Email Address</label>
                   <input
+                    required
                     type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
                     className="w-full bg-ghee-warm border-none rounded-2xl px-6 py-4 focus:ring-2 focus:ring-ghee-gold transition-all"
                     placeholder="john@example.com"
                   />
                 </div>
               </div>
               <div>
+                <label className="block text-xs font-bold text-ghee-gold uppercase tracking-widest mb-2">Phone (optional)</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className="w-full bg-ghee-warm border-none rounded-2xl px-6 py-4 focus:ring-2 focus:ring-ghee-gold transition-all"
+                  placeholder="+91 00000 00000"
+                />
+              </div>
+              <div>
                 <label className="block text-xs font-bold text-ghee-gold uppercase tracking-widest mb-2">Message</label>
                 <textarea
+                  required
                   rows={4}
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
                   className="w-full bg-ghee-warm border-none rounded-2xl px-6 py-4 focus:ring-2 focus:ring-ghee-gold transition-all"
                   placeholder="How can we help you?"
                 />
               </div>
-              <a 
-                href="mailto:info1gavyansh@gmail.com?subject=Inquiry from Gavyansh Website"
-                className="w-full bg-ghee-brown text-ghee-cream py-5 rounded-2xl font-bold hover:bg-ghee-gold transition-all shadow-lg shadow-ghee-brown/10 text-center block"
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-ghee-brown text-ghee-cream py-5 rounded-2xl font-bold hover:bg-ghee-gold transition-all shadow-lg shadow-ghee-brown/10 flex items-center justify-center gap-2 disabled:opacity-60"
               >
-                Send Message
-              </a>
+                {isLoading ? <><Loader2 size={20} className="animate-spin" /> Sending...</> : 'Send Message'}
+              </button>
             </form>
           </motion.div>
         </div>

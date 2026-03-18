@@ -148,8 +148,8 @@ const Home = () => {
             <div className="lg:w-1/2 relative">
               <div className="relative z-10 rounded-[40px] overflow-hidden shadow-2xl">
                 <img
-                  src="/input_file_2.png"
-                  alt="Traditional Bilona Method"
+                  src="/images/D3.jpeg"
+                  alt="Why Choose A2 Desi Ghee"
                   className="w-full h-full object-cover"
                   referrerPolicy="no-referrer"
                 />
