@@ -21,6 +21,9 @@ async function startServer() {
   app.post('/api/checkout', handleCheckout);
   app.post('/api/contact', handleContact);
 
+  // Serve static assets from public/ (images, etc.)
+  app.use(express.static(path.join(process.cwd(), 'public')));
+
   // Dev: Vite middleware | Prod: Serve static build
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({

@@ -23,9 +23,12 @@ const Navbar = () => {
     <nav className="fixed w-full z-50 bg-ghee-cream/80 backdrop-blur-md border-b border-ghee-gold/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20 items-center">
-          <Link to="/" className="flex items-center space-x-2">
+          <Link to="/" className="flex flex-col">
             <span className="text-2xl font-serif font-bold text-ghee-brown tracking-tighter uppercase">
               Gavyansh
+            </span>
+            <span className="text-xs font-bold text-ghee-gold tracking-[0.2em] uppercase -mt-0.5">
+              Go the Vedic Way
             </span>
           </Link>
 

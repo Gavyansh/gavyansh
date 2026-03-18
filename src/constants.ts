@@ -77,10 +77,9 @@ export const BENEFITS: Benefit[] = [
 ];
 
 export const GALLERY_IMAGES = [
-  'https://images.unsplash.com/photo-1528498033373-3c6c08e93d79?auto=format&fit=crop&q=80&w=800',
-  'https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&q=80&w=800',
-  'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&q=80&w=800',
-  'https://images.unsplash.com/photo-1495107336281-199c1576df01?auto=format&fit=crop&q=80&w=800',
-  'https://images.unsplash.com/photo-1594489428504-5c0c480a15fd?auto=format&fit=crop&q=80&w=800',
-  'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?auto=format&fit=crop&q=80&w=800'
+  '/images/D1.jpeg',
+  '/images/D2.jpeg',
+  '/images/D3.jpeg',
+  '/images/D4.jpeg',
+  '/images/D5.jpeg'
 ];

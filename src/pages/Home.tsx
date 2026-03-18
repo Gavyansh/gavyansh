@@ -28,20 +28,13 @@ const Home = () => {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-20">
           <div className="max-w-3xl">
-            <motion.span
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="inline-block text-ghee-gold font-bold tracking-[0.3em] uppercase text-xs mb-6"
-            >
-              Go the Vedic Way
-            </motion.span>
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               className="text-6xl md:text-8xl font-serif font-bold text-ghee-brown leading-[0.9] mb-8"
             >
-              Gavyansh: Pure Gold for Your <span className="italic text-ghee-gold">Well-being.</span>
+              Gavyansh: <span className="italic text-ghee-gold">Go the Vedic Way</span>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}

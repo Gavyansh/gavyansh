@@ -37,21 +37,27 @@ const About = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl font-serif font-bold mb-8">The Vedic Way of Life</h2>
-            <p className="text-ghee-brown/70 leading-relaxed mb-6">
-              Our journey began with a simple mission: to revive the ancient Vedic method of ghee making. In an era of mass production, we chose the slow, traditional path of the Bilona method.
-            </p>
-            <p className="text-ghee-brown/70 leading-relaxed mb-8">
-              We believe that ghee is not just an ingredient; it's a sacred food that nourishes both body and soul. That's why we source our milk exclusively from grass-fed Gir cows, known for their superior A2 milk quality.
-            </p>
-            <div className="grid grid-cols-2 gap-8">
-              <div>
-                <h4 className="text-3xl font-serif font-bold text-ghee-gold mb-1">10+</h4>
-                <p className="text-xs uppercase tracking-widest text-ghee-brown/40">Years of Purity</p>
-              </div>
-              <div>
-                <h4 className="text-3xl font-serif font-bold text-ghee-gold mb-1">5000+</h4>
-                <p className="text-xs uppercase tracking-widest text-ghee-brown/40">Happy Families</p>
-              </div>
+            <div className="space-y-6 text-ghee-brown/70 leading-relaxed">
+              <p>
+                Gavyansh, a sacred Sanskrit word meaning the essence of the cow, embodies our commitment to age-old living rooted in Indian traditions.
+              </p>
+              <p>
+                We revere the desi cow as the heart of Indian life—its nurturing gifts sustain health, spirituality, and harmony. Our pure ghee, crafted from her milk, directly supports gaushalas, channeling every purchase into her care. We are devoted cow devotees, not mere commercial sellers—pouring love into every jar.
+              </p>
+              <p>
+                Experience the unadulterated purity that blesses body and soul. Blessed by divine grace, Gavyansh brings nourishment to your home.
+              </p>
+              <p>
+                Join us in honoring the cow, the mother of all prosperity.
+              </p>
+            </div>
+            <div className="mt-12 p-8 bg-ghee-warm rounded-[32px] border-l-4 border-ghee-gold">
+              <p className="text-xl font-serif italic text-ghee-brown font-medium">
+                Gavo vishvasy Matarah
+              </p>
+              <p className="text-ghee-brown/70 mt-2">
+                The Indian cow is the divine mother of the world.
+              </p>
             </div>
           </motion.div>
           <motion.div
@@ -62,15 +68,15 @@ const About = () => {
           >
             <div className="rounded-[40px] overflow-hidden shadow-2xl">
               <img
-                src="https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&q=80&w=1000"
-                alt="Farm Life"
+                src="/images/D5.jpeg"
+                alt="Gavyansh - The essence of the cow"
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
               />
             </div>
             <div className="absolute -bottom-10 -left-10 bg-white p-8 rounded-[32px] shadow-xl max-w-xs hidden md:block">
               <p className="text-sm italic text-ghee-brown/60">
-                "Our cows are part of our family. We ensure they are happy, healthy, and grass-fed."
+                "We are devoted cow devotees, not mere commercial sellers—pouring love into every jar."
               </p>
             </div>
           </motion.div>

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCartStore } from '../cartStore';
+import { API_BASE } from '../api';
 
 const Cart = () => {
   const { items, removeItem, updateQuantity, totalPrice, clearCart } = useCartStore();
@@ -26,7 +27,7 @@ const Cart = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/checkout', {
+      const response = await fetch(`${API_BASE}/api/checkout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

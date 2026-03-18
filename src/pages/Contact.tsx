@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { API_BASE } from '../api';
 import { motion } from 'motion/react';
 import { Mail, Phone, MapPin, MessageCircle, Clock, CheckCircle2, Loader2 } from 'lucide-react';
 
@@ -14,7 +15,7 @@ const Contact = () => {
     setSubmitStatus('idle');
 
     try {
-      const res = await fetch('/api/contact', {
+      const res = await fetch(`${API_BASE}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

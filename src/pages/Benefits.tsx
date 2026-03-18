@@ -56,8 +56,8 @@ const Benefits = () => {
           <div className="order-2 lg:order-1">
             <div className="rounded-[40px] overflow-hidden shadow-2xl">
               <img
-                src="https://images.unsplash.com/photo-1589927986089-35812388d1f4?auto=format&fit=crop&q=80&w=1000"
-                alt="Ghee Pouring"
+                src="/images/D3.jpeg"
+                alt="Benefits of A2 Desi Ghee"
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
               />
