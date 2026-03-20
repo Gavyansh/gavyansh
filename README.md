@@ -83,9 +83,15 @@ Backend runs on port 3000. Point frontend at it with `VITE_API_URL=http://localh
 | Variable | Where | Description |
 |----------|-------|-------------|
 | `VITE_API_URL` | Vercel | Railway API URL (empty for local monolith) |
-| `PORT` | Railway | Port (Railway sets this automatically) |
+| `VITE_RAZORPAY_KEY_ID` | Vercel | Razorpay Key ID (optional – backend returns it) |
+| `PORT` | Railway | Port (set automatically) |
 | `EMAIL_USER` | Railway | Gmail for order/contact emails |
 | `EMAIL_PASS` | Railway | Gmail App Password |
+| `RAZORPAY_KEY_ID` | Railway | Razorpay Key ID (from dashboard) |
+| `RAZORPAY_KEY_SECRET` | Railway | Razorpay Secret |
+| `SHIPROCKET_EMAIL` | Railway | Shiprocket login email |
+| `SHIPROCKET_PASSWORD` | Railway | Shiprocket login password |
+| `SHIPROCKET_PICKUP_LOCATION` | Railway | Pickup location name (e.g. Primary) |
 
 ---
 

@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
 import { useCartStore } from '../cartStore';
 import { API_BASE } from '../api';
 
+const RAZORPAY_KEY = import.meta.env.VITE_RAZORPAY_KEY_ID || '';
+
 const Cart = () => {
   const { items, removeItem, updateQuantity, totalPrice, clearCart } = useCartStore();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
@@ -16,6 +18,9 @@ const Cart = () => {
     email: '',
     phone: '',
     address: '',
+    city: '',
+    state: '',
+    pincode: '',
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -27,7 +32,7 @@ const Cart = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE}/api/checkout`, {
+      const createRes = await fetch(`${API_BASE}/api/create-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -37,16 +42,78 @@ const Cart = () => {
         }),
       });
 
-      if (response.ok) {
-        setIsOrderPlaced(true);
-        clearCart();
-      } else {
-        alert('Something went wrong. Please try again.');
+      const createData = await createRes.json();
+      if (!createRes.ok || !createData.razorpayOrderId) {
+        alert(createData.error || 'Failed to create order. Please try again.');
+        setIsLoading(false);
+        return;
       }
+
+      const { razorpayOrderId, orderId, amount } = createData;
+      const rzpKey = RAZORPAY_KEY || createData.razorpayKeyId;
+
+      if (!rzpKey || !window.Razorpay) {
+        alert('Payment gateway not configured. Please contact support.');
+        setIsLoading(false);
+        return;
+      }
+
+      const rzp = new window.Razorpay({
+        key: rzpKey,
+        amount: amount,
+        currency: 'INR',
+        name: 'Gavyansh Vedic Ghee',
+        description: `Order ${orderId}`,
+        order_id: razorpayOrderId,
+        prefill: {
+          name: formData.name,
+          email: formData.email,
+          contact: formData.phone,
+        },
+        theme: { color: '#5A4A32' },
+        handler: async (response: {
+          razorpay_payment_id: string;
+          razorpay_order_id: string;
+          razorpay_signature: string;
+        }) => {
+          try {
+            const verifyRes = await fetch(`${API_BASE}/api/verify-payment`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+                customer: formData,
+                items: items,
+                total: totalPrice(),
+                orderId,
+              }),
+            });
+
+            const verifyData = await verifyRes.json();
+            if (verifyRes.ok && verifyData.success) {
+              setIsOrderPlaced(true);
+              clearCart();
+            } else {
+              alert(verifyData.error || 'Payment verification failed. Please contact support with your payment ID.');
+            }
+          } catch (err) {
+            console.error('Verify payment error:', err);
+            alert('Payment verification failed. Please contact support.');
+          } finally {
+            setIsLoading(false);
+          }
+        },
+        modal: {
+          ondismiss: () => setIsLoading(false),
+        },
+      });
+
+      rzp.open();
     } catch (error) {
       console.error('Checkout error:', error);
-      alert('Failed to place order. Please check your connection.');
-    } finally {
+      alert('Failed to initiate payment. Please check your connection.');
       setIsLoading(false);
     }
   };
@@ -64,7 +131,7 @@ const Cart = () => {
           </div>
           <h1 className="text-4xl font-serif font-bold mb-4">Order Placed!</h1>
           <p className="text-ghee-brown/60 mb-10">
-            Thank you for choosing Gavyansh. We've sent a confirmation email to <strong>{formData.email}</strong>. Our team will contact you shortly.
+            Thank you for choosing Gavyansh. We've sent a confirmation email to <strong>{formData.email}</strong>. Our team will ship your order shortly.
           </p>
           <Link
             to="/"
@@ -104,7 +171,6 @@ const Cart = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            {/* Cart Items */}
             <div className="lg:col-span-2 space-y-6">
               <AnimatePresence>
                 {items.map((item) => (
@@ -153,7 +219,6 @@ const Cart = () => {
               </AnimatePresence>
             </div>
 
-            {/* Order Summary & Checkout */}
             <div className="lg:col-span-1">
               <div className="bg-white p-8 rounded-[40px] border border-ghee-gold/5 shadow-xl sticky top-32">
                 <h3 className="text-2xl font-serif font-bold mb-8">Order Summary</h3>
@@ -183,63 +248,38 @@ const Cart = () => {
                   <form onSubmit={handlePlaceOrder} className="space-y-4">
                     <div>
                       <label className="block text-xs font-bold text-ghee-gold uppercase tracking-widest mb-2">Full Name</label>
-                      <input
-                        required
-                        name="name"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        className="w-full bg-ghee-warm border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-ghee-gold transition-all"
-                        placeholder="Your Name"
-                      />
+                      <input required name="name" value={formData.name} onChange={handleInputChange} className="w-full bg-ghee-warm border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-ghee-gold transition-all" placeholder="Your Name" />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-ghee-gold uppercase tracking-widest mb-2">Email Address</label>
-                      <input
-                        required
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        className="w-full bg-ghee-warm border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-ghee-gold transition-all"
-                        placeholder="email@example.com"
-                      />
+                      <label className="block text-xs font-bold text-ghee-gold uppercase tracking-widest mb-2">Email</label>
+                      <input required type="email" name="email" value={formData.email} onChange={handleInputChange} className="w-full bg-ghee-warm border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-ghee-gold transition-all" placeholder="email@example.com" />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-ghee-gold uppercase tracking-widest mb-2">Phone Number</label>
-                      <input
-                        required
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        className="w-full bg-ghee-warm border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-ghee-gold transition-all"
-                        placeholder="+91 00000 00000"
-                      />
+                      <label className="block text-xs font-bold text-ghee-gold uppercase tracking-widest mb-2">Phone</label>
+                      <input required type="tel" name="phone" value={formData.phone} onChange={handleInputChange} className="w-full bg-ghee-warm border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-ghee-gold transition-all" placeholder="+91 00000 00000" />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-ghee-gold uppercase tracking-widest mb-2">Delivery Address</label>
-                      <textarea
-                        required
-                        name="address"
-                        value={formData.address}
-                        onChange={handleInputChange}
-                        rows={3}
-                        className="w-full bg-ghee-warm border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-ghee-gold transition-all"
-                        placeholder="Full Address"
-                      />
+                      <label className="block text-xs font-bold text-ghee-gold uppercase tracking-widest mb-2">Full Address</label>
+                      <textarea required name="address" value={formData.address} onChange={handleInputChange} rows={2} className="w-full bg-ghee-warm border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-ghee-gold transition-all" placeholder="Street, Area, Landmark" />
                     </div>
-                    <button
-                      disabled={isLoading}
-                      type="submit"
-                      className="w-full bg-ghee-brown text-ghee-cream py-5 rounded-2xl font-bold hover:bg-ghee-gold transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-                    >
-                      {isLoading ? 'Processing...' : 'Place Order'}
+                    <div className="grid grid-cols-3 gap-2">
+                      <div>
+                        <label className="block text-xs font-bold text-ghee-gold uppercase tracking-widest mb-2">City</label>
+                        <input name="city" value={formData.city} onChange={handleInputChange} className="w-full bg-ghee-warm border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-ghee-gold transition-all" placeholder="City" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-ghee-gold uppercase tracking-widest mb-2">State</label>
+                        <input name="state" value={formData.state} onChange={handleInputChange} className="w-full bg-ghee-warm border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-ghee-gold transition-all" placeholder="State" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-ghee-gold uppercase tracking-widest mb-2">Pincode</label>
+                        <input name="pincode" value={formData.pincode} onChange={handleInputChange} className="w-full bg-ghee-warm border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-ghee-gold transition-all" placeholder="395007" />
+                      </div>
+                    </div>
+                    <button disabled={isLoading} type="submit" className="w-full bg-ghee-brown text-ghee-cream py-5 rounded-2xl font-bold hover:bg-ghee-gold transition-all flex items-center justify-center gap-2 disabled:opacity-50">
+                      {isLoading ? 'Opening payment...' : 'Pay with Razorpay'}
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => setIsCheckingOut(false)}
-                      className="w-full text-ghee-brown/40 text-sm font-bold hover:text-ghee-brown transition-colors"
-                    >
+                    <button type="button" onClick={() => setIsCheckingOut(false)} className="w-full text-ghee-brown/40 text-sm font-bold hover:text-ghee-brown transition-colors">
                       Back to Cart
                     </button>
                   </form>
