@@ -12,7 +12,6 @@ interface AuthState {
   user: User | null;
   setAuth: (token: string, user: User) => void;
   logout: () => void;
-  isLoggedIn: () => boolean;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -22,14 +21,16 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       setAuth: (token, user) => set({ token, user }),
       logout: () => set({ token: null, user: null }),
-      isLoggedIn: () => {
-        const state = useAuthStore.getState();
-        return !!(state.token && state.user);
-      },
     }),
-    { name: 'gavyansh-auth' }
+    { name: 'gavyansh-auth', partialize: (s) => ({ token: s.token, user: s.user }) }
   )
 );
+
+export function useIsLoggedIn() {
+  const token = useAuthStore((s) => s.token);
+  const user = useAuthStore((s) => s.user);
+  return !!(token && user);
+}
 
 export function getAuthHeaders(): Record<string, string> {
   const token = useAuthStore.getState().token;

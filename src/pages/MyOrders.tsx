@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { motion } from 'motion/react';
 import { Package, ChevronDown, ChevronUp, Calendar, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useAuthStore, getAuthHeaders } from '../authStore';
+import { useAuthStore, useIsLoggedIn, getAuthHeaders } from '../authStore';
 import { API_BASE } from '../api';
 
 interface OrderItem {
@@ -28,10 +28,10 @@ const MyOrders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const isLoggedIn = useAuthStore((s) => s.isLoggedIn());
+  const isLoggedIn = useIsLoggedIn();
 
   useEffect(() => {
-    if (!isLoggedIn()) return;
+    if (!isLoggedIn) return;
 
     const fetchOrders = async () => {
       try {
@@ -61,7 +61,7 @@ const MyOrders = () => {
     });
   };
 
-  if (!isLoggedIn()) {
+  if (!isLoggedIn) {
     return (
       <div className="pt-32 pb-24 min-h-[70vh] flex items-center justify-center">
         <div className="text-center">

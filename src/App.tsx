@@ -14,11 +14,11 @@ import Contact from './pages/Contact';
 import Cart from './pages/Cart';
 import Auth from './pages/Auth';
 import MyOrders from './pages/MyOrders';
-import { useAuthStore } from './authStore';
+import { useIsLoggedIn } from './authStore';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const isLoggedIn = useAuthStore((s) => s.isLoggedIn());
-  if (!isLoggedIn()) {
+  const isLoggedIn = useIsLoggedIn();
+  if (!isLoggedIn) {
     return <Navigate to="/login" replace />;
   }
   return <>{children}</>;

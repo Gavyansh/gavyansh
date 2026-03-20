@@ -3,13 +3,13 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ShoppingCart, Package, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useCartStore } from '../cartStore';
-import { useAuthStore } from '../authStore';
+import { useAuthStore, useIsLoggedIn } from '../authStore';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const totalItems = useCartStore((state) => state.totalItems());
-  const isLoggedIn = useAuthStore((s) => s.isLoggedIn());
+  const isLoggedIn = useIsLoggedIn();
   const logout = useAuthStore((s) => s.logout);
 
   const navLinks = [
@@ -37,7 +37,7 @@ const Navbar = () => {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex space-x-8 items-center">
-            {isLoggedIn() && (
+            {isLoggedIn && (
               <Link
                 to="/my-orders"
                 className={`text-sm font-medium transition-colors hover:text-ghee-gold flex items-center gap-1 ${
@@ -70,7 +70,7 @@ const Navbar = () => {
                 </span>
               )}
             </Link>
-            {isLoggedIn() ? (
+            {isLoggedIn ? (
               <button
                 onClick={logout}
                 className="p-2 text-ghee-brown/70 hover:text-ghee-gold transition-colors"
@@ -90,7 +90,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center gap-2">
-            {isLoggedIn() && (
+            {isLoggedIn && (
               <Link to="/my-orders" className="p-2 text-ghee-brown">
                 <Package size={22} />
               </Link>
@@ -106,7 +106,7 @@ const Navbar = () => {
                 </span>
               )}
             </Link>
-            {!isLoggedIn() && (
+            {!isLoggedIn && (
               <Link to="/login" className="text-sm font-medium text-ghee-brown/70 px-3">
                 Sign In
               </Link>
@@ -131,7 +131,7 @@ const Navbar = () => {
             className="md:hidden bg-ghee-cream border-b border-ghee-gold/10 overflow-hidden"
           >
             <div className="px-4 pt-2 pb-6 space-y-1">
-              {isLoggedIn() && (
+              {isLoggedIn && (
                 <Link
                   to="/my-orders"
                   onClick={() => setIsOpen(false)}
