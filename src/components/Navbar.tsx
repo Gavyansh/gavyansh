@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingCart } from 'lucide-react';
+import { Menu, X, ShoppingCart, Package, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useCartStore } from '../cartStore';
+import { useAuthStore } from '../authStore';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const totalItems = useCartStore((state) => state.totalItems());
+  const isLoggedIn = useAuthStore((s) => s.isLoggedIn());
+  const logout = useAuthStore((s) => s.logout);
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -34,6 +37,17 @@ const Navbar = () => {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex space-x-8 items-center">
+            {isLoggedIn() && (
+              <Link
+                to="/my-orders"
+                className={`text-sm font-medium transition-colors hover:text-ghee-gold flex items-center gap-1 ${
+                  location.pathname === '/my-orders' ? 'text-ghee-gold' : 'text-ghee-brown/70'
+                }`}
+              >
+                <Package size={16} />
+                My Orders
+              </Link>
+            )}
             {navLinks.map((link) => (
               <Link
                 key={link.path}
@@ -56,10 +70,31 @@ const Navbar = () => {
                 </span>
               )}
             </Link>
+            {isLoggedIn() ? (
+              <button
+                onClick={logout}
+                className="p-2 text-ghee-brown/70 hover:text-ghee-gold transition-colors"
+                title="Sign out"
+              >
+                <LogOut size={20} />
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                className="text-sm font-medium text-ghee-brown/70 hover:text-ghee-gold transition-colors"
+              >
+                Sign In
+              </Link>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center gap-4">
+          <div className="md:hidden flex items-center gap-2">
+            {isLoggedIn() && (
+              <Link to="/my-orders" className="p-2 text-ghee-brown">
+                <Package size={22} />
+              </Link>
+            )}
             <Link
               to="/cart"
               className="relative p-2 text-ghee-brown"
@@ -71,6 +106,11 @@ const Navbar = () => {
                 </span>
               )}
             </Link>
+            {!isLoggedIn() && (
+              <Link to="/login" className="text-sm font-medium text-ghee-brown/70 px-3">
+                Sign In
+              </Link>
+            )}
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-ghee-brown p-2"
@@ -91,6 +131,15 @@ const Navbar = () => {
             className="md:hidden bg-ghee-cream border-b border-ghee-gold/10 overflow-hidden"
           >
             <div className="px-4 pt-2 pb-6 space-y-1">
+              {isLoggedIn() && (
+                <Link
+                  to="/my-orders"
+                  onClick={() => setIsOpen(false)}
+                  className="block px-3 py-4 text-base font-medium text-ghee-brown/70"
+                >
+                  My Orders
+                </Link>
+              )}
               {navLinks.map((link) => (
                 <Link
                   key={link.path}

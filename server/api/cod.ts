@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
 import { saveOrder, sendOrderEmails, OrderRecord } from './checkout';
+import { getUserFromToken } from './auth.js';
 import { createShiprocketOrder } from '../services/shiprocket';
 
 export async function handlePlaceOrderCOD(req: Request, res: Response) {
   const { customer, items, total } = req.body;
+  const user = getUserFromToken(req);
 
   if (!customer?.name || !customer?.email || !customer?.phone || !customer?.address) {
     return res.status(400).json({
@@ -20,6 +22,7 @@ export async function handlePlaceOrderCOD(req: Request, res: Response) {
   const orderRecord: OrderRecord = {
     id: orderId,
     paymentMethod: 'COD',
+    ...(user?.id && { userId: user.id }),
     customer: {
       name: String(customer.name).trim(),
       email: String(customer.email).trim(),

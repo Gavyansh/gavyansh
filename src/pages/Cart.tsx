@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, CheckCircle2, CreditCard, Banknote } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCartStore } from '../cartStore';
+import { getAuthHeaders } from '../authStore';
 import { API_BASE } from '../api';
 
 const RAZORPAY_KEY = import.meta.env.VITE_RAZORPAY_KEY_ID || '';
@@ -34,7 +35,7 @@ const Cart = () => {
     try {
       const res = await fetch(`${API_BASE}/api/place-order-cod`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({
           customer: formData,
           items: items,
@@ -67,7 +68,7 @@ const Cart = () => {
     try {
       const createRes = await fetch(`${API_BASE}/api/create-order`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({
           customer: formData,
           items: items,
@@ -112,7 +113,7 @@ const Cart = () => {
           try {
             const verifyRes = await fetch(`${API_BASE}/api/verify-payment`, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
               body: JSON.stringify({
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_order_id: response.razorpay_order_id,

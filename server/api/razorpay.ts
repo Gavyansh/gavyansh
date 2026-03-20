@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import { saveOrder, sendOrderEmails } from './checkout';
+import { getUserFromToken } from './auth.js';
 import { createShiprocketOrder } from '../services/shiprocket';
 
 const razorpay = new Razorpay({
@@ -93,10 +94,12 @@ export async function handleVerifyPayment(req: Request, res: Response) {
     return res.status(400).json({ error: 'Invalid payment signature' });
   }
 
+  const user = getUserFromToken(req);
   const finalOrderId = orderId || `ORD-${Date.now()}`;
   const orderRecord = {
     id: finalOrderId,
     razorpayPaymentId: razorpay_payment_id,
+    ...(user?.id && { userId: user.id }),
     razorpayOrderId: razorpay_order_id,
     customer: {
       name: String(customer.name).trim(),

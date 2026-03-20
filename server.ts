@@ -8,6 +8,8 @@ import { handleProducts } from './server/api/products';
 import { handleHealth } from './server/api/health';
 import { handleCreateOrder, handleVerifyPayment } from './server/api/razorpay';
 import { handlePlaceOrderCOD } from './server/api/cod';
+import { handleSignup, handleLogin } from './server/api/auth';
+import { handleGetMyOrders } from './server/api/orders';
 
 dotenv.config();
 
@@ -20,6 +22,9 @@ async function startServer() {
   // API Routes
   app.get('/api/health', handleHealth);
   app.get('/api/products', handleProducts);
+  app.post('/api/auth/signup', handleSignup);
+  app.post('/api/auth/login', handleLogin);
+  app.get('/api/orders', handleGetMyOrders);
   app.post('/api/checkout', handleCheckout);
   app.post('/api/create-order', handleCreateOrder);
   app.post('/api/verify-payment', handleVerifyPayment);
