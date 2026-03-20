@@ -70,7 +70,7 @@ export async function createShiprocketOrder(order: OrderRecord): Promise<{ order
       units: item.quantity,
       selling_price: item.price,
     })),
-    payment_method: 'Prepaid',
+    payment_method: (order as { paymentMethod?: string }).paymentMethod === 'COD' ? 'COD' : 'Prepaid',
     sub_total: total,
     length: 15,
     breadth: 15,

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'motion/react';
-import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, CheckCircle2, CreditCard, Banknote } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCartStore } from '../cartStore';
 import { API_BASE } from '../api';
@@ -13,6 +13,7 @@ const Cart = () => {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<'razorpay' | 'cod'>('razorpay');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -27,8 +28,40 @@ const Cart = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handlePlaceOrderCOD = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/place-order-cod`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customer: formData,
+          items: items,
+          total: totalPrice(),
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setIsOrderPlaced(true);
+        clearCart();
+      } else {
+        alert(data.error || 'Something went wrong. Please try again.');
+      }
+    } catch (err) {
+      console.error('COD order error:', err);
+      alert('Failed to place order. Please check your connection.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (paymentMethod === 'cod') {
+      await handlePlaceOrderCOD(e);
+      return;
+    }
     setIsLoading(true);
 
     try {
@@ -276,8 +309,23 @@ const Cart = () => {
                         <input name="pincode" value={formData.pincode} onChange={handleInputChange} className="w-full bg-ghee-warm border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-ghee-gold transition-all" placeholder="395007" />
                       </div>
                     </div>
+                    <div className="space-y-2">
+                      <label className="block text-xs font-bold text-ghee-gold uppercase tracking-widest mb-2">Payment Method</label>
+                      <div className="flex gap-4">
+                        <label className={`flex-1 flex items-center gap-2 p-4 rounded-xl border-2 cursor-pointer transition-all ${paymentMethod === 'razorpay' ? 'border-ghee-gold bg-ghee-warm' : 'border-ghee-gold/20 hover:border-ghee-gold/40'}`}>
+                          <input type="radio" name="payment" value="razorpay" checked={paymentMethod === 'razorpay'} onChange={() => setPaymentMethod('razorpay')} className="sr-only" />
+                          <CreditCard size={20} className="text-ghee-gold" />
+                          <span className="font-medium">Pay Online (Razorpay)</span>
+                        </label>
+                        <label className={`flex-1 flex items-center gap-2 p-4 rounded-xl border-2 cursor-pointer transition-all ${paymentMethod === 'cod' ? 'border-ghee-gold bg-ghee-warm' : 'border-ghee-gold/20 hover:border-ghee-gold/40'}`}>
+                          <input type="radio" name="payment" value="cod" checked={paymentMethod === 'cod'} onChange={() => setPaymentMethod('cod')} className="sr-only" />
+                          <Banknote size={20} className="text-ghee-gold" />
+                          <span className="font-medium">Cash on Delivery (COD)</span>
+                        </label>
+                      </div>
+                    </div>
                     <button disabled={isLoading} type="submit" className="w-full bg-ghee-brown text-ghee-cream py-5 rounded-2xl font-bold hover:bg-ghee-gold transition-all flex items-center justify-center gap-2 disabled:opacity-50">
-                      {isLoading ? 'Opening payment...' : 'Pay with Razorpay'}
+                      {isLoading ? (paymentMethod === 'cod' ? 'Placing order...' : 'Opening payment...') : paymentMethod === 'cod' ? 'Place Order (COD)' : 'Pay with Razorpay'}
                     </button>
                     <button type="button" onClick={() => setIsCheckingOut(false)} className="w-full text-ghee-brown/40 text-sm font-bold hover:text-ghee-brown transition-colors">
                       Back to Cart

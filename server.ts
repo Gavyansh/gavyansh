@@ -7,6 +7,7 @@ import { handleContact } from './server/api/contact';
 import { handleProducts } from './server/api/products';
 import { handleHealth } from './server/api/health';
 import { handleCreateOrder, handleVerifyPayment } from './server/api/razorpay';
+import { handlePlaceOrderCOD } from './server/api/cod';
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ async function startServer() {
   app.post('/api/checkout', handleCheckout);
   app.post('/api/create-order', handleCreateOrder);
   app.post('/api/verify-payment', handleVerifyPayment);
+  app.post('/api/place-order-cod', handlePlaceOrderCOD);
   app.post('/api/contact', handleContact);
 
   // Serve static assets from public/ (images, etc.)

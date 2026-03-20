@@ -9,6 +9,7 @@ import dotenv from 'dotenv';
 import { handleCheckout } from './server/api/checkout';
 import { handleContact } from './server/api/contact';
 import { handleCreateOrder, handleVerifyPayment } from './server/api/razorpay';
+import { handlePlaceOrderCOD } from './server/api/cod';
 import { handleProducts } from './server/api/products';
 import { handleHealth } from './server/api/health';
 
@@ -41,6 +42,7 @@ app.get('/api/products', handleProducts);
 app.post('/api/checkout', handleCheckout);
   app.post('/api/create-order', handleCreateOrder);
   app.post('/api/verify-payment', handleVerifyPayment);
+  app.post('/api/place-order-cod', handlePlaceOrderCOD);
   app.post('/api/contact', handleContact);
 
 // Serve images (for /images/* used in product data)

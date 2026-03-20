@@ -95,6 +95,19 @@ Backend runs on port 3000. Point frontend at it with `VITE_API_URL=http://localh
 
 ---
 
+## Testing Payments
+
+### Razorpay (Test Mode)
+When using **Test API keys** (rzp_test_xxx):
+- **Card:** Use `4111 1111 1111 1111`, any future expiry, any CVV
+- **UPI:** Use `success@razorpay` for success, `failure@razorpay` for failure
+- No real money is charged
+
+### COD (Cash on Delivery)
+Select "Cash on Delivery" at checkout to place an order without payment. The order is created, emails are sent, and a Shiprocket shipment is created. Check your Shiprocket dashboard to verify the order appears.
+
+---
+
 ## Project Structure
 
 ```
