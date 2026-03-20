@@ -159,12 +159,8 @@ export async function handleCheckout(req: Request, res: Response) {
     createdAt: new Date().toISOString(),
   };
 
-  try {
-    saveOrder(orderRecord);
-    await sendOrderEmails(orderRecord);
-  } catch (err) {
-    console.error('Checkout error:', err);
-  }
+  saveOrder(orderRecord);
+  sendOrderEmails(orderRecord).catch((err) => console.error('Order email failed:', err));
 
   res.status(200).json({
     success: true,

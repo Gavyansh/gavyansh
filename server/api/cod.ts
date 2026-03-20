@@ -55,7 +55,8 @@ export async function handlePlaceOrderCOD(req: Request, res: Response) {
   }
 
   saveOrder(orderRecord);
-  await sendOrderEmails(orderRecord);
+  // Send emails in background - don't block the response
+  sendOrderEmails(orderRecord).catch((err) => console.error('Order email failed:', err));
 
   res.json({
     success: true,
