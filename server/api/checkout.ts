@@ -94,7 +94,10 @@ export async function sendOrderEmails(order: OrderRecord) {
 
   try {
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      family: 4, // Force IPv4 - Railway has no IPv6 outbound
       auth: { user: emailUser, pass: emailPass },
     });
 
