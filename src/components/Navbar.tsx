@@ -1,13 +1,33 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingCart, Package, LogOut } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, ShoppingCart, Package, LogOut, Leaf } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useCartStore } from '../cartStore';
 import { useAuthStore, useIsLoggedIn } from '../authStore';
+import { unlockAdmin } from '../adminStore';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const logoClickCount = useRef(0);
+  const logoClickTimer = useRef<ReturnType<typeof setTimeout>>();
+
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    logoClickCount.current++;
+    clearTimeout(logoClickTimer.current);
+    if (logoClickCount.current >= 3) {
+      logoClickCount.current = 0;
+      unlockAdmin();
+      navigate('/admin');
+      return;
+    }
+    logoClickTimer.current = setTimeout(() => {
+      logoClickCount.current = 0;
+      navigate('/');
+    }, 500);
+  };
   const totalItems = useCartStore((state) => state.totalItems());
   const isLoggedIn = useIsLoggedIn();
   const logout = useAuthStore((s) => s.logout);
@@ -26,14 +46,21 @@ const Navbar = () => {
     <nav className="fixed w-full z-50 bg-ghee-cream/80 backdrop-blur-md border-b border-ghee-gold/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20 items-center">
-          <Link to="/" className="flex flex-col">
-            <span className="text-2xl font-serif font-bold text-ghee-brown tracking-tighter uppercase">
-              Gavyansh
+          <button
+            type="button"
+            onClick={handleLogoClick}
+            className="flex flex-col items-start text-left hover:opacity-80 transition-opacity cursor-pointer"
+          >
+            <span className="flex items-center gap-2">
+              <Leaf size={20} className="text-ghee-gold" />
+              <span className="text-2xl font-serif font-bold text-ghee-brown tracking-tighter uppercase">
+                Gavyansh
+              </span>
             </span>
             <span className="text-xs font-bold text-ghee-gold tracking-[0.2em] uppercase -mt-0.5">
               Go the Vedic Way
             </span>
-          </Link>
+          </button>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex space-x-8 items-center">

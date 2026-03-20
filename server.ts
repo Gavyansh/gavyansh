@@ -10,6 +10,13 @@ import { handleCreateOrder, handleVerifyPayment } from './server/api/razorpay';
 import { handlePlaceOrderCOD } from './server/api/cod';
 import { handleSignup, handleLogin } from './server/api/auth';
 import { handleGetMyOrders } from './server/api/orders';
+import {
+  handleGetAdminProducts,
+  handlePostAdminProduct,
+  handlePutAdminProduct,
+  handleDeleteAdminProduct,
+  handleGetAdminOrders,
+} from './server/api/admin';
 
 dotenv.config();
 
@@ -25,6 +32,11 @@ async function startServer() {
   app.post('/api/auth/signup', handleSignup);
   app.post('/api/auth/login', handleLogin);
   app.get('/api/orders', handleGetMyOrders);
+  app.get('/api/admin/products', handleGetAdminProducts);
+  app.post('/api/admin/products', handlePostAdminProduct);
+  app.put('/api/admin/products/:id', handlePutAdminProduct);
+  app.delete('/api/admin/products/:id', handleDeleteAdminProduct);
+  app.get('/api/admin/orders', handleGetAdminOrders);
   app.post('/api/checkout', handleCheckout);
   app.post('/api/create-order', handleCreateOrder);
   app.post('/api/verify-payment', handleVerifyPayment);

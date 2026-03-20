@@ -14,6 +14,7 @@ import Contact from './pages/Contact';
 import Cart from './pages/Cart';
 import Auth from './pages/Auth';
 import MyOrders from './pages/MyOrders';
+import Admin from './pages/Admin';
 import { useIsLoggedIn } from './authStore';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -33,6 +34,7 @@ export default function App() {
           <main className="flex-grow">
             <Routes>
               <Route path="/login" element={<Auth />} />
+              <Route path="/admin" element={<Admin />} />
               <Route
                 path="/"
                 element={

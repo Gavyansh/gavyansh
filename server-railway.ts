@@ -14,6 +14,13 @@ import { handleProducts } from './server/api/products';
 import { handleHealth } from './server/api/health';
 import { handleSignup, handleLogin } from './server/api/auth';
 import { handleGetMyOrders } from './server/api/orders';
+import {
+  handleGetAdminProducts,
+  handlePostAdminProduct,
+  handlePutAdminProduct,
+  handleDeleteAdminProduct,
+  handleGetAdminOrders,
+} from './server/api/admin';
 
 dotenv.config();
 
@@ -24,7 +31,7 @@ const app = express();
 app.use((req, res, next) => {
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     return res.sendStatus(204);
   }
@@ -33,7 +40,7 @@ app.use((req, res, next) => {
 
 app.use(cors({
   origin: true,
-  methods: ['GET', 'POST', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 app.use(express.json());
@@ -44,6 +51,11 @@ app.get('/api/products', handleProducts);
 app.post('/api/auth/signup', handleSignup);
 app.post('/api/auth/login', handleLogin);
 app.get('/api/orders', handleGetMyOrders);
+app.get('/api/admin/products', handleGetAdminProducts);
+app.post('/api/admin/products', handlePostAdminProduct);
+app.put('/api/admin/products/:id', handlePutAdminProduct);
+app.delete('/api/admin/products/:id', handleDeleteAdminProduct);
+app.get('/api/admin/orders', handleGetAdminOrders);
 app.post('/api/checkout', handleCheckout);
   app.post('/api/create-order', handleCreateOrder);
   app.post('/api/verify-payment', handleVerifyPayment);

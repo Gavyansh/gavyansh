@@ -1,10 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'motion/react';
-import { PRODUCTS } from '../constants';
+import { PRODUCTS as FALLBACK_PRODUCTS } from '../constants';
 import ProductCard from '../components/ProductCard';
+import { API_BASE } from '../api';
+import { Product } from '../types';
 
 const Products = () => {
+  const [products, setProducts] = useState<Product[]>(FALLBACK_PRODUCTS);
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/products`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) setProducts(data);
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <div className="pt-32 pb-24">
       <Helmet>
@@ -40,7 +53,7 @@ const Products = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
-          {PRODUCTS.map((product) => (
+          {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
