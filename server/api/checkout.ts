@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import nodemailer from 'nodemailer';
 import fs from 'fs';
 import path from 'path';
+import { sendEmail } from './email.js';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 const ORDERS_FILE = path.join(DATA_DIR, 'orders.json');
@@ -84,33 +84,22 @@ export function buildOrderEmailHtml(order: OrderRecord) {
 }
 
 export async function sendOrderEmails(order: OrderRecord) {
-  const emailUser = process.env.EMAIL_USER || 'info1gavyansh@gmail.com';
-  const emailPass = process.env.EMAIL_PASS;
-
-  if (!emailPass) return;
+  if (!process.env.RESEND_API_KEY) return;
 
   const emailContent = buildOrderEmailHtml(order);
   const { id: orderId, customer } = order;
+  const notifyEmail = process.env.ORDER_NOTIFY_EMAIL; // e.g. info1gavyansh@gmail.com
 
   try {
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
-      family: 4, // Force IPv4 - Railway has no IPv6 outbound
-      auth: { user: emailUser, pass: emailPass },
-    });
-
-    await transporter.sendMail({
-      from: `"Gavyansh Vedic Ghee" <${emailUser}>`,
+    await sendEmail({
       to: customer.email,
       subject: `Order Confirmed (${orderId}) - Gavyansh Vedic Ghee`,
       html: emailContent,
     });
 
-    await transporter.sendMail({
-      from: `"Gavyansh Website" <${emailUser}>`,
-      to: emailUser,
+    if (notifyEmail) {
+      await sendEmail({
+        to: notifyEmail,
       subject: `New Order ${orderId} from ${customer.name}`,
       html: `
         <h1>New Order Alert</h1>
@@ -122,7 +111,8 @@ export async function sendOrderEmails(order: OrderRecord) {
         <hr/>
         ${emailContent}
       `,
-    });
+      });
+    }
   } catch (err) {
     console.error('Order email error:', err);
   }

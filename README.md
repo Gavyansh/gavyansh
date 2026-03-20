@@ -23,8 +23,8 @@ E-commerce website for Gavyansh Vedic Ghee – premium A2 Desi Cow Ghee, traditi
    - **Start Command**: `npm run start:api`
    - **Root Directory**: leave default (project root)
 5. Add **Environment Variables**:
-   - `EMAIL_USER` = your Gmail
-   - `EMAIL_PASS` = Gmail App Password
+   - `RESEND_API_KEY` = from [resend.com](https://resend.com) → API Keys (free tier: 100 emails/day)
+   - `ORDER_NOTIFY_EMAIL` = your email (e.g. info1gavyansh@gmail.com) for order & contact alerts
 6. Click **Deploy**. When done, copy your app URL (e.g. `https://gavyansh-api-production.up.railway.app`)
 
 ### 2. Deploy Frontend (Vercel)
@@ -85,8 +85,8 @@ Backend runs on port 3000. Point frontend at it with `VITE_API_URL=http://localh
 | `VITE_API_URL` | Vercel | Railway API URL (empty for local monolith) |
 | `VITE_RAZORPAY_KEY_ID` | Vercel | Razorpay Key ID (optional – backend returns it) |
 | `PORT` | Railway | Port (set automatically) |
-| `EMAIL_USER` | Railway | Gmail for order/contact emails |
-| `EMAIL_PASS` | Railway | Gmail App Password |
+| `RESEND_API_KEY` | Railway | Resend API key (resend.com) – Railway blocks SMTP |
+| `ORDER_NOTIFY_EMAIL` | Railway | Your email for order & contact alerts |
 | `RAZORPAY_KEY_ID` | Railway | Razorpay Key ID (from dashboard) |
 | `RAZORPAY_KEY_SECRET` | Railway | Razorpay Secret |
 | `SHIPROCKET_EMAIL` | Railway | Shiprocket login email |

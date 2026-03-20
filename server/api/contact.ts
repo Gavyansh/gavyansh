@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import nodemailer from 'nodemailer';
 import fs from 'fs';
+import { sendEmail } from './email.js';
 import path from 'path';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
@@ -55,23 +55,13 @@ export async function handleContact(req: Request, res: Response) {
     console.error('Failed to save contact:', err);
   }
 
-  // Send email if configured
-  const emailUser = process.env.EMAIL_USER;
-  const emailPass = process.env.EMAIL_PASS;
+  // Send email if configured (Resend - Railway blocks SMTP)
+  const notifyEmail = process.env.ORDER_NOTIFY_EMAIL;
 
-  if (emailUser && emailPass) {
+  if (process.env.RESEND_API_KEY && notifyEmail) {
     try {
-      const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
-        family: 4, // Force IPv4 - Railway has no IPv6 outbound
-        auth: { user: emailUser, pass: emailPass },
-      });
-
-      await transporter.sendMail({
-        from: `"Gavyansh Website" <${emailUser}>`,
-        to: emailUser,
+      await sendEmail({
+        to: notifyEmail,
         subject: `New Contact: ${contactRecord.name}`,
         html: `
           <h2>New Contact Form Submission</h2>
