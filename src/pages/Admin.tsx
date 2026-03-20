@@ -17,6 +17,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { isAdminUnlocked, lockAdmin } from '../adminStore';
 import { API_BASE } from '../api';
 import { Product } from '../types';
+import ImageUpload from '../components/ImageUpload';
 
 interface ProductRecord extends Product {}
 
@@ -238,15 +239,10 @@ const Admin = () => {
                       className="w-full bg-ghee-warm rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-ghee-gold"
                     />
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold text-ghee-gold uppercase mb-2">Image URL</label>
-                    <input
-                      value={formData.image || ''}
-                      onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                      placeholder="/images/D2.jpeg"
-                      className="w-full bg-ghee-warm rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-ghee-gold"
-                    />
-                  </div>
+                  <ImageUpload
+                    value={formData.image || ''}
+                    onChange={(url) => setFormData({ ...formData, image: url })}
+                  />
                   <div>
                     <label className="block text-xs font-bold text-ghee-gold uppercase mb-2">Benefits (comma-separated)</label>
                     <input
@@ -337,15 +333,13 @@ const Admin = () => {
                               rows={2}
                               className="w-full bg-ghee-warm rounded-xl px-4 py-2 text-sm"
                             />
-                            <input
+                            <ImageUpload
                               value={product.image}
-                              onChange={(e) =>
+                              onChange={(url) =>
                                 setProducts((p) =>
-                                  p.map((x) => (x.id === product.id ? { ...x, image: e.target.value } : x))
+                                  p.map((x) => (x.id === product.id ? { ...x, image: url } : x))
                                 )
                               }
-                              placeholder="Image URL"
-                              className="w-full bg-ghee-warm rounded-xl px-4 py-2 text-sm"
                             />
                             <div>
                               <span className="text-xs font-bold text-ghee-gold uppercase">Benefits (comma-separated)</span>

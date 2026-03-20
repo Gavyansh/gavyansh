@@ -35,8 +35,10 @@ E-commerce website for Gavyansh Vedic Ghee – premium A2 Desi Cow Ghee, traditi
 3. Vercel will detect Vite. Verify:
    - **Build Command**: `npm run build`
    - **Output Directory**: `dist`
-4. Add **Environment Variable**:
+4. Add **Environment Variables**:
    - `VITE_API_URL` = your Railway URL (e.g. `https://gavyansh-api-production.up.railway.app`)
+   - `VITE_CLOUDINARY_CLOUD_NAME` = from [cloudinary.com](https://cloudinary.com) (for image upload in admin)
+   - `VITE_CLOUDINARY_UPLOAD_PRESET` = unsigned preset from Cloudinary Upload settings
 5. Click **Deploy**
 
 ### 3. Add Custom Domain
@@ -89,6 +91,8 @@ Backend runs on port 3000. Point frontend at it with `VITE_API_URL=http://localh
 | `RESEND_API_KEY` | Railway | Resend API key (resend.com) – Railway blocks SMTP |
 | `ORDER_NOTIFY_EMAIL` | Railway | Your email for order & contact alerts |
 | `JWT_SECRET` | Railway | Secret for auth tokens (use a random string in production) |
+| `VITE_CLOUDINARY_CLOUD_NAME` | Vercel | Cloudinary cloud name (for admin image upload) |
+| `VITE_CLOUDINARY_UPLOAD_PRESET` | Vercel | Cloudinary unsigned upload preset |
 | `RAZORPAY_KEY_ID` | Railway | Razorpay Key ID (from dashboard) |
 | `RAZORPAY_KEY_SECRET` | Railway | Razorpay Secret |
 | `SHIPROCKET_EMAIL` | Railway | Shiprocket login email |
@@ -107,6 +111,12 @@ When using **Test API keys** (rzp_test_xxx):
 
 ### COD (Cash on Delivery)
 Select "Cash on Delivery" at checkout to place an order without payment. The order is created, emails are sent, and a Shiprocket shipment is created. Check your Shiprocket dashboard to verify the order appears.
+
+---
+
+## Database (Future)
+
+Currently using JSON files for products, orders, and users. For growth and reliability, consider migrating to PostgreSQL. See [docs/DATABASE.md](docs/DATABASE.md) for a migration guide.
 
 ---
 
