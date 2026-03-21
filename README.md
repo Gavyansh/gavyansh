@@ -41,6 +41,8 @@ E-commerce website for Gavyansh Vedic Ghee – premium A2 Desi Cow Ghee, traditi
    - `VITE_CLOUDINARY_UPLOAD_PRESET` = unsigned preset from Cloudinary Upload settings
 5. Click **Deploy**
 
+**Admin product images:** Add Cloudinary variables (see [docs/CLOUDINARY.md](docs/CLOUDINARY.md)) so uploads work in the admin dashboard.
+
 ### 3. Add Custom Domain
 
 - **Vercel**: Project → Settings → Domains → Add your domain
