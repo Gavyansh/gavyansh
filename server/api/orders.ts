@@ -3,8 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import { getUserFromToken } from './auth.js';
 import { OrderRecord } from './checkout.js';
+import { DATA_DIR } from '../dataPaths.js';
 
-const DATA_DIR = path.join(process.cwd(), 'data');
 const ORDERS_FILE = path.join(DATA_DIR, 'orders.json');
 
 function getOrders(): OrderRecord[] {

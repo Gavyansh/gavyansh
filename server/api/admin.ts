@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
 import { OrderRecord } from './checkout.js';
+import { DATA_DIR, ensureDataDir } from '../dataPaths.js';
 
-const DATA_DIR = path.join(process.cwd(), 'data');
 const PRODUCTS_FILE = path.join(DATA_DIR, 'products.json');
 const ORDERS_FILE = path.join(DATA_DIR, 'orders.json');
 
@@ -40,12 +40,6 @@ const DEFAULT_PRODUCTS: ProductRecord[] = [
     ],
   },
 ];
-
-function ensureDataDir() {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-}
 
 export function getProducts(): ProductRecord[] {
   ensureDataDir();

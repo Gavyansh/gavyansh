@@ -1,16 +1,10 @@
 import { Request, Response } from 'express';
 import fs from 'fs';
-import { sendEmail } from './email.js';
 import path from 'path';
+import { sendEmail } from './email.js';
+import { DATA_DIR, ensureDataDir } from '../dataPaths.js';
 
-const DATA_DIR = path.join(process.cwd(), 'data');
 const CONTACTS_FILE = path.join(DATA_DIR, 'contacts.json');
-
-function ensureDataDir() {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-}
 
 function saveContact(contact: {
   id: string;

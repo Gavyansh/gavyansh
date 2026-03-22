@@ -25,7 +25,9 @@ E-commerce website for Gavyansh Vedic Ghee – premium A2 Desi Cow Ghee, traditi
 5. Add **Environment Variables**:
    - `RESEND_API_KEY` = from [resend.com](https://resend.com) → API Keys (free tier: 100 emails/day)
    - `ORDER_NOTIFY_EMAIL` = your email (e.g. info1gavyansh@gmail.com) for order & contact alerts
+   - `ORDER_FROM_EMAIL` = sender address on your verified domain (e.g. `orders@gavyansh.com`)
    - `JWT_SECRET` = a random string for auth tokens (e.g. `openssl rand -hex 32`)
+   - **`DATA_DIR=/data`** (required for logins & orders to persist) + add a **Volume** mounted at `/data` — see [docs/RAILWAY_DATA.md](docs/RAILWAY_DATA.md)
 6. Click **Deploy**. When done, copy your app URL (e.g. `https://gavyansh-api-production.up.railway.app`)
 
 ### 2. Deploy Frontend (Vercel)

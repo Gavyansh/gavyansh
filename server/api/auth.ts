@@ -3,8 +3,8 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
+import { DATA_DIR, ensureDataDir } from '../dataPaths.js';
 
-const DATA_DIR = path.join(process.cwd(), 'data');
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
 const JWT_SECRET = process.env.JWT_SECRET || 'gavyansh-vedic-secret-change-in-production';
 
@@ -14,12 +14,6 @@ export interface User {
   name: string;
   passwordHash: string;
   createdAt: string;
-}
-
-function ensureDataDir() {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
 }
 
 function getUsers(): User[] {
@@ -38,8 +32,15 @@ function hashPassword(password: string): string {
 }
 
 function verifyPassword(password: string, hash: string): boolean {
-  const h = hashPassword(password);
-  return crypto.timingSafeEqual(Buffer.from(h, 'hex'), Buffer.from(hash, 'hex'));
+  try {
+    const h = hashPassword(password);
+    const a = Buffer.from(h, 'hex');
+    const b = Buffer.from(hash, 'hex');
+    if (a.length !== b.length) return false;
+    return crypto.timingSafeEqual(a, b);
+  } catch {
+    return false;
+  }
 }
 
 export function getUserFromToken(req: Request): { id: string; email: string; name: string } | null {

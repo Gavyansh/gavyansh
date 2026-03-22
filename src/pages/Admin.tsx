@@ -14,7 +14,7 @@ import {
   Save,
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { isAdminUnlocked, lockAdmin } from '../adminStore';
+import { isAdminUnlocked, isAdminPinVerified, submitAdminPin, lockAdmin } from '../adminStore';
 import { API_BASE } from '../api';
 import { Product } from '../types';
 import ImageUpload from '../components/ImageUpload';
@@ -30,6 +30,9 @@ const Admin = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [formData, setFormData] = useState<Partial<ProductRecord>>({});
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
+  const [pinVerified, setPinVerified] = useState(() => isAdminPinVerified());
+  const [pinInput, setPinInput] = useState('');
+  const [pinError, setPinError] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,9 +40,10 @@ const Admin = () => {
       navigate('/', { replace: true });
       return;
     }
+    if (!pinVerified) return;
     fetchProducts();
     fetchOrders();
-  }, [navigate]);
+  }, [navigate, pinVerified]);
 
   const fetchProducts = async () => {
     try {
@@ -139,6 +143,62 @@ const Admin = () => {
   };
 
   if (!isAdminUnlocked()) return null;
+
+  if (!pinVerified) {
+    return (
+      <div className="min-h-screen bg-ghee-warm/30 pt-24 pb-24 flex items-center justify-center px-4">
+        <Helmet>
+          <title>Admin Access | Gavyansh</title>
+        </Helmet>
+        <div className="bg-white rounded-[32px] border border-ghee-gold/10 shadow-xl p-10 max-w-md w-full">
+          <h2 className="text-2xl font-serif font-bold text-ghee-brown text-center mb-2">Admin access</h2>
+          <p className="text-ghee-brown/60 text-sm text-center mb-8">Enter the access code to continue</p>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              setPinError('');
+              if (submitAdminPin(pinInput)) {
+                setPinVerified(true);
+                setPinInput('');
+              } else {
+                setPinError('Invalid code. Try again.');
+              }
+            }}
+            className="space-y-4"
+          >
+            <input
+              type="password"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              autoComplete="off"
+              value={pinInput}
+              onChange={(e) => setPinInput(e.target.value)}
+              placeholder="Access code"
+              className="w-full bg-ghee-warm rounded-xl px-4 py-4 text-center text-2xl tracking-[0.3em] font-mono border-none focus:ring-2 focus:ring-ghee-gold"
+              maxLength={8}
+            />
+            {pinError && <p className="text-red-500 text-sm text-center">{pinError}</p>}
+            <button
+              type="submit"
+              className="w-full bg-ghee-brown text-ghee-cream py-4 rounded-xl font-bold hover:bg-ghee-gold transition-all"
+            >
+              Continue
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                lockAdmin();
+                navigate('/', { replace: true });
+              }}
+              className="w-full text-ghee-brown/50 text-sm font-medium hover:text-ghee-brown"
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-ghee-warm/30 pt-24 pb-24">

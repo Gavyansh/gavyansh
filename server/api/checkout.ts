@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
 import { sendEmail } from './email.js';
+import { DATA_DIR, ensureDataDir } from '../dataPaths.js';
 
-const DATA_DIR = path.join(process.cwd(), 'data');
 const ORDERS_FILE = path.join(DATA_DIR, 'orders.json');
 
 export interface OrderRecord {
@@ -13,12 +13,6 @@ export interface OrderRecord {
   total: number;
   createdAt: string;
   [key: string]: unknown;
-}
-
-function ensureDataDir() {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
 }
 
 export function saveOrder(order: OrderRecord) {
