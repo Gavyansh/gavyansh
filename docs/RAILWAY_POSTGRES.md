@@ -55,3 +55,14 @@ npx prisma migrate dev --name describe_change
 ```
 
 Commit the `prisma/migrations` folder and deploy.
+
+## Troubleshooting: login works once / “Invalid email or password”
+
+1. **Vercel must have `VITE_API_URL`** set to your **Railway API URL** (e.g. `https://your-service.up.railway.app`), then **redeploy** the frontend.  
+   If it is missing, the browser calls `/api/*` on **Vercel** (static SPA), not Railway — sign-up/login will not hit your database reliably. Open the browser **Console** on your live site: you should see a warning if `VITE_API_URL` was not set at build time.
+
+2. **Same environment**: Registering on **localhost** uses your **local** Postgres; the **production** site uses **Railway’s** Postgres. Use the same site (or same API URL) for sign-up and sign-in.
+
+3. **Check DB from Railway**: open `https://YOUR-RAILWAY-URL/api/health/db` — expect `{ "status": "ok", "database": "connected" }`. If you get `503`, fix `DATABASE_URL` on the API service.
+
+4. **Inspect users** (optional): run `npx prisma studio` locally with `DATABASE_URL` pointed at Railway’s **public** connection string (from Postgres **Connect** tab), and check the `User` table.

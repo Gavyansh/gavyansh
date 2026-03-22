@@ -11,7 +11,7 @@ import { handleContact } from './server/api/contact';
 import { handleCreateOrder, handleVerifyPayment } from './server/api/razorpay';
 import { handlePlaceOrderCOD } from './server/api/cod';
 import { handleProducts } from './server/api/products';
-import { handleHealth } from './server/api/health';
+import { handleHealth, handleHealthDb } from './server/api/health';
 import { handleSignup, handleLogin } from './server/api/auth';
 import { handleGetMyOrders } from './server/api/orders';
 import {
@@ -49,6 +49,7 @@ app.use(express.json());
 
 // API Routes
 app.get('/api/health', handleHealth);
+app.get('/api/health/db', handleHealthDb);
 app.get('/api/products', handleProducts);
 app.post('/api/auth/signup', handleSignup);
 app.post('/api/auth/login', handleLogin);
