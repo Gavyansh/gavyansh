@@ -1,10 +1,6 @@
 import { Request, Response } from 'express';
-import fs from 'fs';
-import path from 'path';
 import { sendEmail } from './email.js';
-import { DATA_DIR, ensureDataDir } from '../dataPaths.js';
-
-const ORDERS_FILE = path.join(DATA_DIR, 'orders.json');
+import { prisma } from '../db.js';
 
 export interface OrderRecord {
   id: string;
@@ -15,14 +11,44 @@ export interface OrderRecord {
   [key: string]: unknown;
 }
 
-export function saveOrder(order: OrderRecord) {
-  ensureDataDir();
-  let orders: OrderRecord[] = [];
-  if (fs.existsSync(ORDERS_FILE)) {
-    orders = JSON.parse(fs.readFileSync(ORDERS_FILE, 'utf-8'));
-  }
-  orders.push(order);
-  fs.writeFileSync(ORDERS_FILE, JSON.stringify(orders, null, 2), 'utf-8');
+export async function saveOrder(order: OrderRecord) {
+  const o = order as OrderRecord & {
+    userId?: string;
+    paymentMethod?: string;
+    razorpayPaymentId?: string;
+    razorpayOrderId?: string;
+    shiprocketOrderId?: string | null;
+    awb?: string | null;
+  };
+
+  await prisma.order.create({
+    data: {
+      id: o.id,
+      userId: o.userId ?? null,
+      paymentMethod: o.paymentMethod ?? null,
+      razorpayPaymentId: o.razorpayPaymentId ?? null,
+      razorpayOrderId: o.razorpayOrderId ?? null,
+      customerName: o.customer.name,
+      customerEmail: o.customer.email,
+      customerPhone: o.customer.phone,
+      customerAddress: o.customer.address,
+      customerCity: o.customer.city ?? null,
+      customerState: o.customer.state ?? null,
+      customerPincode: o.customer.pincode ?? null,
+      total: o.total,
+      shiprocketOrderId: o.shiprocketOrderId ?? null,
+      awb: o.awb ?? null,
+      items: {
+        create: o.items.map((i) => ({
+          productId: i.id,
+          name: i.name,
+          weight: i.weight,
+          price: i.price,
+          quantity: i.quantity,
+        })),
+      },
+    },
+  });
 }
 
 export function buildOrderEmailHtml(order: OrderRecord) {
@@ -82,7 +108,7 @@ export async function sendOrderEmails(order: OrderRecord) {
 
   const emailContent = buildOrderEmailHtml(order);
   const { id: orderId, customer } = order;
-  const notifyEmail = process.env.ORDER_NOTIFY_EMAIL; // e.g. info1gavyansh@gmail.com
+  const notifyEmail = process.env.ORDER_NOTIFY_EMAIL;
 
   try {
     await sendEmail({
@@ -94,8 +120,8 @@ export async function sendOrderEmails(order: OrderRecord) {
     if (notifyEmail) {
       await sendEmail({
         to: notifyEmail,
-      subject: `New Order ${orderId} from ${customer.name}`,
-      html: `
+        subject: `New Order ${orderId} from ${customer.name}`,
+        html: `
         <h1>New Order Alert</h1>
         <p><strong>Order ID:</strong> ${orderId}</p>
         <p><strong>Customer:</strong> ${customer.name}</p>
@@ -146,7 +172,13 @@ export async function handleCheckout(req: Request, res: Response) {
     createdAt: new Date().toISOString(),
   };
 
-  saveOrder(orderRecord);
+  try {
+    await saveOrder(orderRecord);
+  } catch (err) {
+    console.error('saveOrder error:', err);
+    return res.status(500).json({ error: 'Failed to save order' });
+  }
+
   sendOrderEmails(orderRecord).catch((err) => console.error('Order email failed:', err));
 
   res.status(200).json({

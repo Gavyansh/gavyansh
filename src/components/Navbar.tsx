@@ -11,7 +11,7 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const logoClickCount = useRef(0);
-  const logoClickTimer = useRef<ReturnType<typeof setTimeout>>();
+  const logoClickTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();

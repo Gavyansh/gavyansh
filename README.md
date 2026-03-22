@@ -8,7 +8,7 @@ E-commerce website for Gavyansh Vedic Ghee – premium A2 Desi Cow Ghee, traditi
 - **Cart**: Add to cart, quantity control, localStorage persistence
 - **Checkout**: Place orders with customer details; email confirmations (when configured)
 - **Contact**: Contact form with backend submission and email alerts
-- **Order & Contact Storage**: Data saved in `data/` (JSON) for records
+- **Data**: PostgreSQL (users, orders, products, contacts) via Prisma
 
 ---
 
@@ -27,7 +27,7 @@ E-commerce website for Gavyansh Vedic Ghee – premium A2 Desi Cow Ghee, traditi
    - `ORDER_NOTIFY_EMAIL` = your email (e.g. info1gavyansh@gmail.com) for order & contact alerts
    - `ORDER_FROM_EMAIL` = sender address on your verified domain (e.g. `orders@gavyansh.com`)
    - `JWT_SECRET` = a random string for auth tokens (e.g. `openssl rand -hex 32`)
-   - **`DATA_DIR=/data`** (required for logins & orders to persist) + add a **Volume** mounted at `/data` — see [docs/RAILWAY_DATA.md](docs/RAILWAY_DATA.md)
+   - **`DATABASE_URL`** = PostgreSQL connection string — add a **PostgreSQL** database in Railway and link it (see [docs/RAILWAY_POSTGRES.md](docs/RAILWAY_POSTGRES.md))
 6. Click **Deploy**. When done, copy your app URL (e.g. `https://gavyansh-api-production.up.railway.app`)
 
 ### 2. Deploy Frontend (Vercel)
@@ -55,6 +55,10 @@ E-commerce website for Gavyansh Vedic Ghee – premium A2 Desi Cow Ghee, traditi
 ## Run Locally
 
 ### Development (monolith – frontend + backend together)
+
+1. Copy `.env.example` to `.env` and set **`DATABASE_URL`** (local Postgres, Docker, or Railway’s public URL).
+2. Apply migrations: `npx prisma migrate deploy` (or `npm run db:push` for quick local setup).
+
 ```bash
 npm install
 npm run dev
@@ -89,10 +93,13 @@ Backend runs on port 3000. Point frontend at it with `VITE_API_URL=http://localh
 
 | Variable | Where | Description |
 |----------|-------|-------------|
+| `DATABASE_URL` | Local `.env` | Same as Railway – required for API |
 | `VITE_API_URL` | Vercel | Railway API URL (empty for local monolith) |
 | `VITE_RAZORPAY_KEY_ID` | Vercel | Razorpay Key ID (optional – backend returns it) |
 | `PORT` | Railway | Port (set automatically) |
+| `DATABASE_URL` | Railway | PostgreSQL connection string (from Railway Postgres plugin) |
 | `RESEND_API_KEY` | Railway | Resend API key (resend.com) – Railway blocks SMTP |
+| `ORDER_FROM_EMAIL` | Railway | Sender email on verified domain (e.g. orders@gavyansh.com) |
 | `ORDER_NOTIFY_EMAIL` | Railway | Your email for order & contact alerts |
 | `JWT_SECRET` | Railway | Secret for auth tokens (use a random string in production) |
 | `VITE_CLOUDINARY_CLOUD_NAME` | Vercel | Cloudinary cloud name (for admin image upload) |
@@ -118,9 +125,9 @@ Select "Cash on Delivery" at checkout to place an order without payment. The ord
 
 ---
 
-## Database (Future)
+## Database
 
-Currently using JSON files for products, orders, and users. For growth and reliability, consider migrating to PostgreSQL. See [docs/DATABASE.md](docs/DATABASE.md) for a migration guide.
+Uses **PostgreSQL** + **Prisma**. See [docs/DATABASE.md](docs/DATABASE.md) and [docs/RAILWAY_POSTGRES.md](docs/RAILWAY_POSTGRES.md).
 
 ---
 
@@ -131,8 +138,8 @@ Currently using JSON files for products, orders, and users. For growth and relia
 │   └── api/
 ├── server.ts         # Full server (local dev + monolithic prod)
 ├── server-railway.ts  # API-only (Railway deploy)
+├── prisma/           # Schema + migrations (PostgreSQL)
 ├── src/              # React frontend
-├── data/             # JSON storage
 ├── vercel.json       # Vercel config
 ├── railway.json      # Railway start command
 └── vite.config.ts

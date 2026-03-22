@@ -17,6 +17,7 @@ import {
   handleDeleteAdminProduct,
   handleGetAdminOrders,
 } from './server/api/admin';
+import { bootstrapDatabase } from './server/bootstrapDb.js';
 
 dotenv.config();
 
@@ -60,6 +61,8 @@ async function startServer() {
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }
+
+  await bootstrapDatabase();
 
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`\n  Gavyansh server running at http://localhost:${PORT}`);

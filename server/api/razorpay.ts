@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
-import { saveOrder, sendOrderEmails } from './checkout';
+import { saveOrder, sendOrderEmails } from './checkout.js';
 import { getUserFromToken } from './auth.js';
 import { createShiprocketOrder } from '../services/shiprocket';
 
@@ -135,8 +135,12 @@ export async function handleVerifyPayment(req: Request, res: Response) {
     }
   }
 
-  saveOrder(orderRecord);
-  // Send emails in background - don't block the response
+  try {
+    await saveOrder(orderRecord);
+  } catch (err) {
+    console.error('saveOrder error:', err);
+    return res.status(500).json({ error: 'Failed to save order' });
+  }
   sendOrderEmails(orderRecord).catch((err) => console.error('Order email failed:', err));
 
   res.json({

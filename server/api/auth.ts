@@ -1,11 +1,8 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import fs from 'fs';
-import path from 'path';
-import { DATA_DIR, ensureDataDir } from '../dataPaths.js';
+import { prisma } from '../db.js';
 
-const USERS_FILE = path.join(DATA_DIR, 'users.json');
 const JWT_SECRET = process.env.JWT_SECRET || 'gavyansh-vedic-secret-change-in-production';
 
 export interface User {
@@ -14,17 +11,6 @@ export interface User {
   name: string;
   passwordHash: string;
   createdAt: string;
-}
-
-function getUsers(): User[] {
-  ensureDataDir();
-  if (!fs.existsSync(USERS_FILE)) return [];
-  return JSON.parse(fs.readFileSync(USERS_FILE, 'utf-8'));
-}
-
-function saveUsers(users: User[]) {
-  ensureDataDir();
-  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf-8');
 }
 
 function hashPassword(password: string): string {
@@ -73,21 +59,19 @@ export async function handleSignup(req: Request, res: Response) {
     return res.status(400).json({ error: 'Password must be at least 6 characters' });
   }
 
-  const users = getUsers();
-  if (users.some((u) => u.email === emailStr)) {
+  const existing = await prisma.user.findUnique({ where: { email: emailStr } });
+  if (existing) {
     return res.status(400).json({ error: 'An account with this email already exists' });
   }
 
-  const user: User = {
-    id: `user-${Date.now()}`,
-    email: emailStr,
-    name: nameStr,
-    passwordHash: hashPassword(passwordStr),
-    createdAt: new Date().toISOString(),
-  };
-
-  users.push(user);
-  saveUsers(users);
+  const user = await prisma.user.create({
+    data: {
+      id: `user-${Date.now()}`,
+      email: emailStr,
+      name: nameStr,
+      passwordHash: hashPassword(passwordStr),
+    },
+  });
 
   const token = jwt.sign(
     { userId: user.id, email: user.email, name: user.name },
@@ -112,8 +96,7 @@ export async function handleLogin(req: Request, res: Response) {
   }
 
   const emailStr = String(email).trim().toLowerCase();
-  const users = getUsers();
-  const user = users.find((u) => u.email === emailStr);
+  const user = await prisma.user.findUnique({ where: { email: emailStr } });
 
   if (!user || !verifyPassword(String(password), user.passwordHash)) {
     return res.status(401).json({ error: 'Invalid email or password' });

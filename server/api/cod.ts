@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { saveOrder, sendOrderEmails, OrderRecord } from './checkout';
+import { saveOrder, sendOrderEmails, OrderRecord } from './checkout.js';
 import { getUserFromToken } from './auth.js';
 import { createShiprocketOrder } from '../services/shiprocket';
 
@@ -57,8 +57,12 @@ export async function handlePlaceOrderCOD(req: Request, res: Response) {
     }
   }
 
-  saveOrder(orderRecord);
-  // Send emails in background - don't block the response
+  try {
+    await saveOrder(orderRecord);
+  } catch (err) {
+    console.error('saveOrder error:', err);
+    return res.status(500).json({ error: 'Failed to save order' });
+  }
   sendOrderEmails(orderRecord).catch((err) => console.error('Order email failed:', err));
 
   res.json({

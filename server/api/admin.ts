@@ -1,11 +1,7 @@
 import { Request, Response } from 'express';
-import fs from 'fs';
-import path from 'path';
+import { prisma } from '../db.js';
+import { orderToRecord } from '../orderMapper.js';
 import { OrderRecord } from './checkout.js';
-import { DATA_DIR, ensureDataDir } from '../dataPaths.js';
-
-const PRODUCTS_FILE = path.join(DATA_DIR, 'products.json');
-const ORDERS_FILE = path.join(DATA_DIR, 'orders.json');
 
 export interface ProductRecord {
   id: string;
@@ -16,60 +12,39 @@ export interface ProductRecord {
   variants: { weight: string; price: number }[];
 }
 
-const DEFAULT_PRODUCTS: ProductRecord[] = [
-  {
-    id: 'a2-desi-ghee',
-    name: 'A2 Vedic Bilona Ghee',
-    description: 'Traditionally churned from the curd of A2 milk of grass-fed Desi Cows. Rich in aroma and granular in texture.',
-    image: '/images/D2.jpeg',
-    benefits: ['Rich in A2 Protein', 'Bilona Method', 'No Preservatives'],
-    variants: [
-      { weight: '500ml', price: 850 },
-      { weight: '1L', price: 1600 },
-    ],
-  },
-  {
-    id: 'gir-cow-ghee',
-    name: 'Gir Cow Ghee',
-    description: 'Pure and authentic Gir Cow Ghee, traditionally churned for maximum health benefits and superior taste.',
-    image: '/images/D1.jpeg',
-    benefits: ['Pure Gir Cow Milk', 'Traditionally Churned', 'Superior Taste'],
-    variants: [
-      { weight: '500ml', price: 950 },
-      { weight: '1L', price: 1800 },
-    ],
-  },
-];
-
-export function getProducts(): ProductRecord[] {
-  ensureDataDir();
-  if (fs.existsSync(PRODUCTS_FILE)) {
-    try {
-      return JSON.parse(fs.readFileSync(PRODUCTS_FILE, 'utf-8'));
-    } catch {
-      return [...DEFAULT_PRODUCTS];
-    }
-  }
-  return [...DEFAULT_PRODUCTS];
+function productToRecord(p: {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+  benefits: unknown;
+  variants: unknown;
+}): ProductRecord {
+  return {
+    id: p.id,
+    name: p.name,
+    description: p.description,
+    image: p.image,
+    benefits: Array.isArray(p.benefits) ? (p.benefits as string[]) : [],
+    variants: Array.isArray(p.variants)
+      ? (p.variants as { weight: string; price: number }[])
+      : [],
+  };
 }
 
-function saveProducts(products: ProductRecord[]) {
-  ensureDataDir();
-  fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 2), 'utf-8');
-}
-
-function getOrders(): OrderRecord[] {
-  if (!fs.existsSync(ORDERS_FILE)) return [];
-  try {
-    return JSON.parse(fs.readFileSync(ORDERS_FILE, 'utf-8'));
-  } catch {
-    return [];
-  }
+export async function getProducts(): Promise<ProductRecord[]> {
+  const rows = await prisma.product.findMany({ orderBy: { createdAt: 'asc' } });
+  return rows.map(productToRecord);
 }
 
 export async function handleGetAdminProducts(_req: Request, res: Response) {
-  const products = getProducts();
-  res.json(products);
+  try {
+    const products = await getProducts();
+    res.json(products);
+  } catch (err) {
+    console.error('handleGetAdminProducts:', err);
+    res.status(500).json({ error: 'Failed to load products' });
+  }
 }
 
 export async function handlePostAdminProduct(req: Request, res: Response) {
@@ -79,10 +54,10 @@ export async function handlePostAdminProduct(req: Request, res: Response) {
     return res.status(400).json({ error: 'Product name and id are required' });
   }
 
-  const products = getProducts();
   const id = String(product.id).trim().toLowerCase().replace(/\s+/g, '-');
 
-  if (products.some((p) => p.id === id)) {
+  const exists = await prisma.product.findUnique({ where: { id } });
+  if (exists) {
     return res.status(400).json({ error: 'A product with this ID already exists' });
   }
 
@@ -100,8 +75,17 @@ export async function handlePostAdminProduct(req: Request, res: Response) {
       : [{ weight: '500ml', price: 0 }],
   };
 
-  products.push(newProduct);
-  saveProducts(products);
+  await prisma.product.create({
+    data: {
+      id: newProduct.id,
+      name: newProduct.name,
+      description: newProduct.description,
+      image: newProduct.image,
+      benefits: newProduct.benefits,
+      variants: newProduct.variants,
+    },
+  });
+
   res.json({ success: true, product: newProduct });
 }
 
@@ -109,45 +93,58 @@ export async function handlePutAdminProduct(req: Request, res: Response) {
   const { id } = req.params;
   const updates = req.body as Partial<ProductRecord>;
 
-  const products = getProducts();
-  const index = products.findIndex((p) => p.id === id);
-  if (index === -1) {
+  const existing = await prisma.product.findUnique({ where: { id } });
+  if (!existing) {
     return res.status(404).json({ error: 'Product not found' });
   }
 
-  const existing = products[index];
+  const cur = productToRecord(existing);
   const updated: ProductRecord = {
     id: existing.id,
-    name: updates.name !== undefined ? String(updates.name).trim() : existing.name,
-    description: updates.description !== undefined ? String(updates.description).trim() : existing.description,
-    image: updates.image !== undefined ? String(updates.image).trim() : existing.image,
-    benefits: updates.benefits !== undefined ? updates.benefits.map(String) : existing.benefits,
+    name: updates.name !== undefined ? String(updates.name).trim() : cur.name,
+    description: updates.description !== undefined ? String(updates.description).trim() : cur.description,
+    image: updates.image !== undefined ? String(updates.image).trim() : cur.image,
+    benefits: updates.benefits !== undefined ? updates.benefits.map(String) : cur.benefits,
     variants:
       updates.variants !== undefined
         ? updates.variants.map((v) => ({
             weight: String(v.weight).trim(),
             price: Number(v.price) || 0,
           }))
-        : existing.variants,
+        : cur.variants,
   };
 
-  products[index] = updated;
-  saveProducts(products);
+  await prisma.product.update({
+    where: { id },
+    data: {
+      name: updated.name,
+      description: updated.description,
+      image: updated.image,
+      benefits: updated.benefits,
+      variants: updated.variants,
+    },
+  });
+
   res.json({ success: true, product: updated });
 }
 
 export async function handleDeleteAdminProduct(req: Request, res: Response) {
   const { id } = req.params;
-  const products = getProducts().filter((p) => p.id !== id);
-  if (products.length === getProducts().length) {
+
+  try {
+    await prisma.product.delete({ where: { id } });
+    res.json({ success: true });
+  } catch {
     return res.status(404).json({ error: 'Product not found' });
   }
-  saveProducts(products);
-  res.json({ success: true });
 }
 
 export async function handleGetAdminOrders(_req: Request, res: Response) {
-  const orders = getOrders();
-  orders.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
-  res.json({ success: true, orders });
+  const orders = await prisma.order.findMany({
+    include: { items: true },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  const asRecords: OrderRecord[] = orders.map((o) => orderToRecord(o));
+  res.json({ success: true, orders: asRecords });
 }

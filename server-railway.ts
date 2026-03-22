@@ -22,6 +22,8 @@ import {
   handleGetAdminOrders,
 } from './server/api/admin';
 
+import { bootstrapDatabase } from './server/bootstrapDb.js';
+
 dotenv.config();
 
 const PORT = Number(process.env.PORT) || 3000;
@@ -65,6 +67,14 @@ app.post('/api/checkout', handleCheckout);
 // Serve images (for /images/* used in product data)
 app.use('/images', express.static(path.join(process.cwd(), 'public/images')));
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Gavyansh API running on port ${PORT}`);
+async function start() {
+  await bootstrapDatabase();
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Gavyansh API running on port ${PORT}`);
+  });
+}
+
+start().catch((err) => {
+  console.error('Failed to start server:', err);
+  process.exit(1);
 });

@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { getProducts } from './admin.js';
 
-export function handleProducts(_req: Request, res: Response) {
+export async function handleProducts(_req: Request, res: Response) {
   try {
-    const products = getProducts();
+    const products = await getProducts();
     return res.json(products);
   } catch (err) {
     console.error('Products API error:', err);
