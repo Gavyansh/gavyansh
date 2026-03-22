@@ -12,12 +12,16 @@ export async function bootstrapDatabase() {
   const productCount = await prisma.product.count();
   if (productCount === 0) {
     for (const p of DEFAULT_PRODUCTS) {
+      const imgs = 'images' in p && Array.isArray((p as { images: string[] }).images)
+        ? (p as { images: string[] }).images
+        : [p.image];
       await prisma.product.create({
         data: {
           id: p.id,
           name: p.name,
           description: p.description,
           image: p.image,
+          images: imgs,
           benefits: p.benefits,
           variants: p.variants,
         },

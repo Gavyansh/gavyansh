@@ -8,8 +8,22 @@ export interface ProductRecord {
   name: string;
   description: string;
   image: string;
+  /** Up to 3 image URLs; primary/cover is `image` (same as images[0] when set). */
+  images: string[];
   benefits: string[];
   variants: { weight: string; price: number }[];
+}
+
+/** Up to 3 URLs; ensures at least one entry for display/cart. */
+function normalizeProductImagesList(image: unknown, images: unknown, fallback = '/images/D2.jpeg'): string[] {
+  let list: string[] = [];
+  if (Array.isArray(images)) {
+    list = images.map((x) => String(x).trim()).filter(Boolean).slice(0, 3);
+  }
+  const single = String(image || '').trim();
+  if (list.length === 0 && single) list = [single];
+  if (list.length === 0) list = [fallback];
+  return list;
 }
 
 function productToRecord(p: {
@@ -19,12 +33,19 @@ function productToRecord(p: {
   image: string;
   benefits: unknown;
   variants: unknown;
+  images?: unknown;
 }): ProductRecord {
+  const fromJson = Array.isArray(p.images)
+    ? (p.images as string[]).map((s) => String(s).trim()).filter(Boolean).slice(0, 3)
+    : [];
+  const images = fromJson.length > 0 ? fromJson : p.image ? [String(p.image).trim()] : [];
+  const primary = images[0] || String(p.image || '').trim() || '/images/D2.jpeg';
   return {
     id: p.id,
     name: p.name,
     description: p.description,
-    image: p.image,
+    image: primary,
+    images: images.length ? images : [primary],
     benefits: Array.isArray(p.benefits) ? (p.benefits as string[]) : [],
     variants: Array.isArray(p.variants)
       ? (p.variants as { weight: string; price: number }[])
@@ -61,11 +82,13 @@ export async function handlePostAdminProduct(req: Request, res: Response) {
     return res.status(400).json({ error: 'A product with this ID already exists' });
   }
 
+  const imageList = normalizeProductImagesList(product.image, product.images);
   const newProduct: ProductRecord = {
     id,
     name: String(product.name).trim(),
     description: String(product.description || '').trim(),
-    image: String(product.image || '/images/D2.jpeg').trim(),
+    image: imageList[0],
+    images: imageList,
     benefits: Array.isArray(product.benefits) ? product.benefits.map(String) : [],
     variants: Array.isArray(product.variants)
       ? product.variants.map((v) => ({
@@ -81,6 +104,7 @@ export async function handlePostAdminProduct(req: Request, res: Response) {
       name: newProduct.name,
       description: newProduct.description,
       image: newProduct.image,
+      images: newProduct.images,
       benefits: newProduct.benefits,
       variants: newProduct.variants,
     },
@@ -99,11 +123,24 @@ export async function handlePutAdminProduct(req: Request, res: Response) {
   }
 
   const cur = productToRecord(existing);
+  let nextImages: string[];
+  if (Array.isArray(updates.images)) {
+    nextImages = updates.images.map((x) => String(x).trim()).filter(Boolean).slice(0, 3);
+  } else if (updates.image !== undefined) {
+    const first = String(updates.image).trim();
+    const rest = cur.images.slice(1).filter(Boolean);
+    nextImages = [first, ...rest].slice(0, 3);
+  } else {
+    nextImages = cur.images;
+  }
+  if (nextImages.length === 0) nextImages = [cur.image];
+
   const updated: ProductRecord = {
     id: existing.id,
     name: updates.name !== undefined ? String(updates.name).trim() : cur.name,
     description: updates.description !== undefined ? String(updates.description).trim() : cur.description,
-    image: updates.image !== undefined ? String(updates.image).trim() : cur.image,
+    image: nextImages[0],
+    images: nextImages,
     benefits: updates.benefits !== undefined ? updates.benefits.map(String) : cur.benefits,
     variants:
       updates.variants !== undefined
@@ -120,6 +157,7 @@ export async function handlePutAdminProduct(req: Request, res: Response) {
       name: updated.name,
       description: updated.description,
       image: updated.image,
+      images: updated.images,
       benefits: updated.benefits,
       variants: updated.variants,
     },

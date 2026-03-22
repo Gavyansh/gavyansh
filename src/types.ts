@@ -5,6 +5,8 @@ export interface Product {
   name: string;
   description: string;
   image: string;
+  /** Up to 3 gallery URLs; when omitted, UI uses `image` only. */
+  images?: string[];
   benefits: string[];
   variants: {
     weight: string;

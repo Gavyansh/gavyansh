@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'motion/react';
-import { Leaf, Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { Mail, Lock, User, ArrowRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../authStore';
 import { API_BASE } from '../api';
+import { LOGO_SRC } from '../constants/branding';
 
 const Auth = () => {
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
@@ -64,18 +65,15 @@ const Auth = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-ghee-brown/90 via-ghee-brown/70 to-transparent" />
         <div className="relative z-10 flex flex-col justify-center px-16">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 bg-ghee-gold rounded-2xl flex items-center justify-center">
-              <Leaf size={28} className="text-ghee-brown" />
-            </div>
-            <div>
-              <span className="text-3xl font-serif font-bold text-ghee-cream tracking-tight">
-                Gavyansh
-              </span>
-              <span className="block text-xs font-bold text-ghee-gold tracking-[0.3em] uppercase">
-                Go the Vedic Way
-              </span>
-            </div>
+          <div className="mb-8">
+            <img
+              src={LOGO_SRC}
+              alt="Gavyansh"
+              className="h-16 w-auto max-w-[280px] object-contain object-left drop-shadow-md"
+            />
+            <span className="block text-xs font-bold text-ghee-gold tracking-[0.3em] uppercase mt-3">
+              Go the Vedic Way
+            </span>
           </div>
           <p className="text-ghee-cream/90 text-lg max-w-md leading-relaxed">
             Welcome to the home of pure A2 Desi Cow Ghee. Sign in to explore our premium collection and track your orders.
@@ -88,10 +86,8 @@ const Auth = () => {
         <div className="w-full max-w-md">
           <div className="lg:hidden text-center mb-12">
             <Link to="/" className="inline-flex flex-col items-center">
-              <span className="text-3xl font-serif font-bold text-ghee-brown tracking-tight">
-                Gavyansh
-              </span>
-              <span className="text-xs font-bold text-ghee-gold tracking-[0.2em] uppercase">
+              <img src={LOGO_SRC} alt="Gavyansh" className="h-14 w-auto max-w-[220px] object-contain" />
+              <span className="text-xs font-bold text-ghee-gold tracking-[0.2em] uppercase mt-2">
                 Go the Vedic Way
               </span>
             </Link>

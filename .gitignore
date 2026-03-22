@@ -8,3 +8,6 @@ coverage/
 !.env.example
 data/orders.json
 data/contacts.json
+
+# Duplicate asset drop (use public/images/ for the site)
+/images/

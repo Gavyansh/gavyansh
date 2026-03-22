@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, ShoppingCart, Package, LogOut, Leaf } from 'lucide-react';
+import { Menu, X, ShoppingCart, Package, LogOut } from 'lucide-react';
+import { LOGO_SRC } from '../constants/branding';
 import { motion, AnimatePresence } from 'motion/react';
 import { useCartStore } from '../cartStore';
 import { useAuthStore, useIsLoggedIn } from '../authStore';
@@ -49,15 +50,14 @@ const Navbar = () => {
           <button
             type="button"
             onClick={handleLogoClick}
-            className="flex flex-col items-start text-left hover:opacity-80 transition-opacity cursor-pointer"
+            className="flex flex-col items-start text-left hover:opacity-90 transition-opacity cursor-pointer gap-1"
           >
-            <span className="flex items-center gap-2">
-              <Leaf size={20} className="text-ghee-gold" />
-              <span className="text-2xl font-serif font-bold text-ghee-brown tracking-tighter uppercase">
-                Gavyansh
-              </span>
-            </span>
-            <span className="text-xs font-bold text-ghee-gold tracking-[0.2em] uppercase -mt-0.5">
+            <img
+              src={LOGO_SRC}
+              alt="Gavyansh"
+              className="h-12 sm:h-14 w-auto max-w-[220px] object-contain object-left"
+            />
+            <span className="text-[10px] sm:text-xs font-bold text-ghee-gold tracking-[0.2em] uppercase">
               Go the Vedic Way
             </span>
           </button>

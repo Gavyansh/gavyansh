@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Instagram, Facebook, Twitter, Mail, Phone, MapPin } from 'lucide-react';
+import { LOGO_SRC } from '../constants/branding';
 
 const Footer = () => {
   return (
@@ -8,8 +9,8 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div className="col-span-1 md:col-span-1">
-            <Link to="/" className="text-2xl font-serif font-bold tracking-tighter mb-6 block uppercase">
-              Gavyansh
+            <Link to="/" className="block mb-6">
+              <img src={LOGO_SRC} alt="Gavyansh" className="h-12 w-auto max-w-[200px] object-contain object-left drop-shadow-lg" />
             </Link>
             <p className="text-ghee-cream/60 text-sm leading-relaxed mb-8">
               Go the Vedic Way. Bringing the ancient wisdom of Ayurveda to your modern kitchen through traditionally churned, pure A2 Desi Cow Ghee.

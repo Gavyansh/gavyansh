@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { API_BASE } from '../api';
 import { motion } from 'motion/react';
-import { Mail, Phone, MapPin, MessageCircle, Clock, CheckCircle2, Loader2 } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, CheckCircle2, Loader2 } from 'lucide-react';
+import WhatsAppIcon from '../components/WhatsAppIcon';
 
 const Contact = () => {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
@@ -129,7 +130,7 @@ const Contact = () => {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-[#25D366] text-white px-8 py-4 rounded-full font-bold hover:opacity-90 transition-all"
                 >
-                  <MessageCircle size={20} />
+                  <WhatsAppIcon size={22} className="text-white shrink-0" />
                   WhatsApp Now
                 </a>
               </div>

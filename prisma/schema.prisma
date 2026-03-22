@@ -20,6 +20,8 @@ model Product {
   name        String
   description String   @default("")
   image       String
+  /// Up to 3 gallery image URLs (Cloudinary or /images/...). Primary/cover is `image` (kept in sync with images[0]).
+  images      Json     @default("[]")
   benefits    Json     @default("[]")
   variants    Json     @default("[]")
   createdAt   DateTime @default(now())

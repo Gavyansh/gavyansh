@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Product } from '../types';
 import { motion } from 'motion/react';
-import { ShoppingCart, Check, Plus } from 'lucide-react';
+import { ShoppingCart, Check, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCartStore } from '../cartStore';
+import { getProductImages } from '../utils/productImages';
 
 interface ProductCardProps {
   product: Product;
@@ -12,6 +13,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
   const addItem = useCartStore((state) => state.addItem);
   const [isAdded, setIsAdded] = useState(false);
+  const gallery = getProductImages(product);
+  const [imgIdx, setImgIdx] = useState(0);
+  useEffect(() => {
+    setImgIdx(0);
+  }, [product.id, gallery.join('|')]);
 
   const handleAddToCart = () => {
     addItem(product, selectedVariant);
@@ -26,13 +32,58 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       viewport={{ once: true }}
       className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-ghee-gold/5 group"
     >
-      <div className="relative aspect-square overflow-hidden">
+      <div className="relative aspect-square overflow-hidden bg-ghee-warm/30">
         <img
-          src={product.image}
+          src={gallery[imgIdx] || product.image}
           alt={product.name}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           referrerPolicy="no-referrer"
         />
+        {gallery.length > 1 && (
+          <>
+            <button
+              type="button"
+              aria-label="Previous image"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setImgIdx((i) => (i - 1 + gallery.length) % gallery.length);
+              }}
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 text-ghee-brown shadow flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button
+              type="button"
+              aria-label="Next image"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setImgIdx((i) => (i + 1) % gallery.length);
+              }}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 text-ghee-brown shadow flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
+            >
+              <ChevronRight size={20} />
+            </button>
+            <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
+              {gallery.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  aria-label={`Image ${i + 1}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setImgIdx(i);
+                  }}
+                  className={`h-2 rounded-full transition-all ${
+                    i === imgIdx ? 'w-6 bg-ghee-gold' : 'w-2 bg-white/80 hover:bg-white'
+                  }`}
+                />
+              ))}
+            </div>
+          </>
+        )}
         <div className="absolute top-4 left-4">
           <span className="bg-ghee-gold text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
             Premium A2

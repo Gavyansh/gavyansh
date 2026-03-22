@@ -17,7 +17,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { isAdminUnlocked, isAdminPinVerified, submitAdminPin, lockAdmin } from '../adminStore';
 import { API_BASE } from '../api';
 import { Product } from '../types';
-import ImageUpload from '../components/ImageUpload';
+import ProductImagesEditor from '../components/ProductImagesEditor';
+import { getProductImages } from '../utils/productImages';
 
 interface ProductRecord extends Product {}
 
@@ -95,6 +96,11 @@ const Admin = () => {
       alert('Name and ID are required');
       return;
     }
+    const imgs = (formData.images || []).filter(Boolean);
+    if (imgs.length === 0) {
+      alert('Please add at least one product image (up to 3).');
+      return;
+    }
 
     try {
       const res = await fetch(`${API_BASE}/api/admin/products`, {
@@ -104,7 +110,8 @@ const Admin = () => {
           id: String(formData.id).trim().toLowerCase().replace(/\s+/g, '-'),
           name: formData.name,
           description: formData.description || '',
-          image: formData.image || '/images/D2.jpeg',
+          image: imgs[0],
+          images: imgs.slice(0, 3),
           benefits: formData.benefits || [],
           variants: formData.variants || [{ weight: '500ml', price: 0 }],
         }),
@@ -299,9 +306,16 @@ const Admin = () => {
                       className="w-full bg-ghee-warm rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-ghee-gold"
                     />
                   </div>
-                  <ImageUpload
-                    value={formData.image || ''}
-                    onChange={(url) => setFormData({ ...formData, image: url })}
+                  <ProductImagesEditor
+                    requireFirst
+                    urls={formData.images || []}
+                    onChange={(urls) =>
+                      setFormData({
+                        ...formData,
+                        images: urls,
+                        image: urls[0] || formData.image,
+                      })
+                    }
                   />
                   <div>
                     <label className="block text-xs font-bold text-ghee-gold uppercase mb-2">Benefits (comma-separated)</label>
@@ -368,8 +382,12 @@ const Admin = () => {
                     className="bg-white rounded-3xl border border-ghee-gold/10 overflow-hidden shadow-sm"
                   >
                     <div className="flex flex-col md:flex-row gap-6 p-6">
-                      <div className="w-32 h-32 rounded-2xl overflow-hidden shrink-0">
-                        <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                      <div className="w-32 h-32 rounded-2xl overflow-hidden shrink-0 bg-ghee-warm/30">
+                        <img
+                          src={getProductImages(product)[0] || product.image}
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                       <div className="flex-grow">
                         {editingId === product.id ? (
@@ -393,11 +411,15 @@ const Admin = () => {
                               rows={2}
                               className="w-full bg-ghee-warm rounded-xl px-4 py-2 text-sm"
                             />
-                            <ImageUpload
-                              value={product.image}
-                              onChange={(url) =>
+                            <ProductImagesEditor
+                              urls={getProductImages(product)}
+                              onChange={(urls) =>
                                 setProducts((p) =>
-                                  p.map((x) => (x.id === product.id ? { ...x, image: url } : x))
+                                  p.map((x) =>
+                                    x.id === product.id
+                                      ? { ...x, images: urls, image: urls[0] || x.image }
+                                      : x
+                                  )
                                 )
                               }
                             />

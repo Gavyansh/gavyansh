@@ -9,10 +9,18 @@ interface ImageUploadProps {
   value: string;
   onChange: (url: string) => void;
   label?: string;
+  /** When true, no label row is rendered (parent provides context). */
+  hideLabel?: boolean;
   className?: string;
 }
 
-export default function ImageUpload({ value, onChange, label = 'Product Image', className = '' }: ImageUploadProps) {
+export default function ImageUpload({
+  value,
+  onChange,
+  label = 'Product Image',
+  hideLabel = false,
+  className = '',
+}: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
@@ -60,9 +68,11 @@ export default function ImageUpload({ value, onChange, label = 'Product Image', 
   if (!CLOUDINARY_ENABLED) {
     return (
       <div className={className}>
-        <label className="block text-xs font-bold text-ghee-gold uppercase tracking-widest mb-2">
-          {label} (URL)
-        </label>
+        {!hideLabel && (
+          <label className="block text-xs font-bold text-ghee-gold uppercase tracking-widest mb-2">
+            {label} (URL)
+          </label>
+        )}
         <input
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -78,9 +88,11 @@ export default function ImageUpload({ value, onChange, label = 'Product Image', 
 
   return (
     <div className={className}>
-      <label className="block text-xs font-bold text-ghee-gold uppercase tracking-widest mb-2">
-        {label}
-      </label>
+      {!hideLabel && (
+        <label className="block text-xs font-bold text-ghee-gold uppercase tracking-widest mb-2">
+          {label}
+        </label>
+      )}
       <div className="flex flex-col sm:flex-row gap-4 items-start">
         {value && (
           <div className="w-24 h-24 rounded-xl overflow-hidden border border-ghee-gold/20 shrink-0">
