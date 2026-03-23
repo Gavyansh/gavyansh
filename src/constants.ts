@@ -76,10 +76,11 @@ export const BENEFITS: Benefit[] = [
   }
 ];
 
-export const GALLERY_IMAGES = [
-  '/images/D1.jpeg',
-  '/images/D2.jpeg',
-  '/images/D3.jpeg',
-  '/images/D4.jpeg',
-  '/images/D5.jpeg'
+/** Served from `public/gallery/` — images + videos shown on the Gallery page */
+export const GALLERY_MEDIA: { src: string; type: 'image' | 'video' }[] = [
+  { src: '/gallery/G1.jpeg', type: 'image' },
+  { src: '/gallery/G2.jpeg', type: 'image' },
+  { src: '/gallery/G3.jpeg', type: 'image' },
+  { src: '/gallery/G4.mp4', type: 'video' },
+  { src: '/gallery/G5.mp4', type: 'video' },
 ];

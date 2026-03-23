@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'motion/react';
-import { GALLERY_IMAGES } from '../constants';
+import { GALLERY_MEDIA } from '../constants';
 
 const Gallery = () => {
   return (
@@ -31,21 +31,34 @@ const Gallery = () => {
         </div>
 
         <div className="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
-          {GALLERY_IMAGES.map((img, i) => (
+          {GALLERY_MEDIA.map((item, i) => (
             <motion.div
-              key={i}
+              key={item.src}
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="break-inside-avoid rounded-[32px] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 group"
+              className="break-inside-avoid rounded-[32px] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 group bg-ghee-brown/5"
             >
-              <img
-                src={img}
-                alt={`Gallery ${i}`}
-                className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-110"
-                referrerPolicy="no-referrer"
-              />
+              {item.type === 'video' ? (
+                <video
+                  src={item.src}
+                  controls
+                  playsInline
+                  preload="metadata"
+                  className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                >
+                  Your browser does not support the video tag.
+                </video>
+              ) : (
+                <img
+                  src={item.src}
+                  alt={`Gallery ${i + 1}`}
+                  className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-110"
+                  loading="lazy"
+                  decoding="async"
+                />
+              )}
             </motion.div>
           ))}
         </div>

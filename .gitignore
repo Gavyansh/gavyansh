@@ -11,3 +11,6 @@ data/contacts.json
 
 # Duplicate asset drop (use public/images/ for the site)
 /images/
+
+# Local gallery drop folder — use public/gallery/ for the live site (see public/gallery/README.md)
+/gallery/
