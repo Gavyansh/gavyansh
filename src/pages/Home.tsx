@@ -45,7 +45,7 @@ const Home = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-6xl md:text-8xl font-serif font-bold text-ghee-brown leading-[0.9] mb-8"
+              className="font-home-heading text-ghee-brown mb-8 text-[28px] sm:text-[32px] md:text-[40px] lg:text-[48px]"
             >
               Gavyansh: <span className="italic text-ghee-gold">Go the Vedic Way</span>
             </motion.h1>
@@ -53,7 +53,7 @@ const Home = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-lg md:text-xl text-ghee-brown/70 mb-10 leading-relaxed"
+              className="text-base sm:text-[17px] md:text-lg text-ghee-brown/70 mb-10 leading-relaxed max-w-xl"
             >
               Experience the authentic taste of A2 Desi Cow Ghee, traditionally churned using the Bilona method from grass-fed Gir cows.
             </motion.p>
@@ -101,7 +101,9 @@ const Home = () => {
                 <div className="w-16 h-16 bg-ghee-warm rounded-2xl flex items-center justify-center mx-auto mb-6 text-ghee-gold">
                   <feature.icon size={32} />
                 </div>
-                <h3 className="font-serif text-xl font-bold mb-2">{feature.title}</h3>
+                <h3 className="font-home-heading text-[18px] sm:text-[19px] md:text-[21px] lg:text-[24px] mb-2">
+                  {feature.title}
+                </h3>
                 <p className="text-ghee-brown/60 text-sm">{feature.desc}</p>
               </motion.div>
             ))}
@@ -114,7 +116,9 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <span className="text-ghee-gold font-bold tracking-widest uppercase text-xs">Our Collection</span>
-            <h2 className="text-4xl md:text-5xl font-serif font-bold mt-4">Premium Vedic Products</h2>
+            <h2 className="font-home-heading text-[22px] sm:text-[24px] md:text-[28px] lg:text-[32px] mt-4">
+              Premium Vedic Products
+            </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
             {products.map((product) => (
@@ -130,7 +134,9 @@ const Home = () => {
           <div className="flex flex-col lg:flex-row items-center gap-16">
             <div className="lg:w-1/2">
               <span className="text-ghee-gold font-bold tracking-widest uppercase text-xs">Health Benefits</span>
-              <h2 className="text-4xl md:text-5xl font-serif font-bold mt-4 mb-8">Why Choose A2 Desi Ghee?</h2>
+              <h2 className="font-home-heading text-[22px] sm:text-[24px] md:text-[28px] lg:text-[32px] mt-4 mb-8">
+                Why Choose A2 Desi Ghee?
+              </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 {BENEFITS.slice(0, 4).map((benefit, i) => (
                   <div key={i} className="flex gap-4">
@@ -171,7 +177,9 @@ const Home = () => {
       <section className="py-24 bg-ghee-brown text-ghee-cream">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-serif font-bold">What Our Customers Say</h2>
+            <h2 className="font-home-heading text-[22px] sm:text-[24px] md:text-[28px] lg:text-[32px]">
+              What Our Customers Say
+            </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {REVIEWS.map((review) => (
