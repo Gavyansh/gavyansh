@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'motion/react';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, CheckCircle2, CreditCard, Banknote } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useCartStore } from '../cartStore';
-import { getAuthHeaders } from '../authStore';
+import { getAuthHeaders, useIsLoggedIn } from '../authStore';
 import { API_BASE } from '../api';
 
 const RAZORPAY_KEY = import.meta.env.VITE_RAZORPAY_KEY_ID || '';
 
 const Cart = () => {
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const isLoggedIn = useIsLoggedIn();
   const { items, removeItem, updateQuantity, totalPrice, clearCart } = useCartStore();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
@@ -29,8 +32,22 @@ const Cart = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  /** After login from checkout, reopen checkout UI */
+  useEffect(() => {
+    if (searchParams.get('checkout') === '1') {
+      if (items.length > 0) {
+        setIsCheckingOut(true);
+      }
+      setSearchParams({}, { replace: true });
+    }
+  }, [items.length, searchParams, setSearchParams]);
+
   const handlePlaceOrderCOD = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isLoggedIn) {
+      navigate('/login?redirect=/cart&checkout=1');
+      return;
+    }
     setIsLoading(true);
     try {
       const res = await fetch(`${API_BASE}/api/place-order-cod`, {
@@ -59,6 +76,10 @@ const Cart = () => {
 
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isLoggedIn) {
+      navigate('/login?redirect=/cart&checkout=1');
+      return;
+    }
     if (paymentMethod === 'cod') {
       await handlePlaceOrderCOD(e);
       return;
@@ -273,7 +294,14 @@ const Cart = () => {
 
                 {!isCheckingOut ? (
                   <button
-                    onClick={() => setIsCheckingOut(true)}
+                    type="button"
+                    onClick={() => {
+                      if (!isLoggedIn) {
+                        navigate('/login?redirect=/cart&checkout=1');
+                        return;
+                      }
+                      setIsCheckingOut(true);
+                    }}
                     className="w-full bg-ghee-brown text-ghee-cream py-5 rounded-2xl font-bold hover:bg-ghee-gold transition-all flex items-center justify-center gap-2"
                   >
                     Proceed to Checkout <ArrowRight size={20} />

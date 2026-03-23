@@ -35,70 +35,14 @@ export default function App() {
             <Routes>
               <Route path="/login" element={<Auth />} />
               <Route path="/admin" element={<Admin />} />
-              <Route
-                path="/"
-                element={
-                  <ProtectedRoute>
-                    <Home />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/products"
-                element={
-                  <ProtectedRoute>
-                    <Products />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/about"
-                element={
-                  <ProtectedRoute>
-                    <About />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/benefits"
-                element={
-                  <ProtectedRoute>
-                    <Benefits />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/gallery"
-                element={
-                  <ProtectedRoute>
-                    <Gallery />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/reviews"
-                element={
-                  <ProtectedRoute>
-                    <Reviews />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/contact"
-                element={
-                  <ProtectedRoute>
-                    <Contact />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/cart"
-                element={
-                  <ProtectedRoute>
-                    <Cart />
-                  </ProtectedRoute>
-                }
-              />
+              <Route path="/" element={<Home />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/benefits" element={<Benefits />} />
+              <Route path="/gallery" element={<Gallery />} />
+              <Route path="/reviews" element={<Reviews />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/cart" element={<Cart />} />
               <Route
                 path="/my-orders"
                 element={

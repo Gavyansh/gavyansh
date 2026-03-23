@@ -108,9 +108,9 @@ const Navbar = () => {
             ) : (
               <Link
                 to="/login"
-                className="text-sm font-medium text-ghee-brown/70 hover:text-ghee-gold transition-colors"
+                className="rounded-full border border-ghee-brown/30 bg-white px-4 py-2.5 text-sm font-bold text-ghee-brown shadow-sm hover:bg-ghee-brown hover:text-ghee-cream hover:border-ghee-brown transition-colors"
               >
-                Sign In
+                Sign in / Sign up
               </Link>
             )}
           </div>
@@ -134,8 +134,11 @@ const Navbar = () => {
               )}
             </Link>
             {!isLoggedIn && (
-              <Link to="/login" className="text-sm font-medium text-ghee-brown/70 px-3">
-                Sign In
+              <Link
+                to="/login"
+                className="rounded-full border border-ghee-brown/30 bg-white px-3 py-2 text-xs font-bold text-ghee-brown shadow-sm hover:bg-ghee-brown hover:text-ghee-cream transition-colors whitespace-nowrap"
+              >
+                Sign in
               </Link>
             )}
             <button

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'motion/react';
 import { Mail, Lock, User, ArrowRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthStore } from '../authStore';
 import { API_BASE } from '../api';
 import { LOGO_SRC } from '../constants/branding';
@@ -16,6 +16,7 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const setAuth = useAuthStore((s) => s.setAuth);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,7 +42,14 @@ const Auth = () => {
       }
 
       setAuth(data.token, data.user);
-      navigate('/', { replace: true });
+      const redirect = searchParams.get('redirect') || '/';
+      const checkout = searchParams.get('checkout');
+      const safeRedirect = redirect.startsWith('/') && !redirect.startsWith('//') ? redirect : '/';
+      if (checkout === '1' && safeRedirect === '/cart') {
+        navigate('/cart?checkout=1', { replace: true });
+      } else {
+        navigate(safeRedirect, { replace: true });
+      }
     } catch (err) {
       setError('Connection failed. Please try again.');
     } finally {
@@ -55,25 +63,18 @@ const Auth = () => {
         <title>Sign In | Gavyansh Vedic Ghee</title>
       </Helmet>
 
-      {/* Left — large light logo watermark (same file as header: public/images/GAVYANSH FINAL LOGO.png) */}
+      {/* Left — logo watermark only (same file as header) */}
       <div className="hidden lg:flex lg:w-1/2 lg:min-h-screen relative overflow-hidden bg-ghee-cream">
-        {/* Use <img> so the asset always loads; CSS bg was hidden by the old heavy overlay + tiny opacity */}
         <img
           src={LOGO_SRC}
           alt=""
           width={520}
           height={520}
-          className="pointer-events-none absolute left-1/2 top-1/2 w-[min(92%,520px)] max-h-[min(70vh,520px)] -translate-x-1/2 -translate-y-1/2 object-contain opacity-[0.24] select-none"
+          className="pointer-events-none absolute left-1/2 top-1/2 w-[min(92%,520px)] max-h-[min(70vh,520px)] -translate-x-1/2 -translate-y-1/2 object-contain opacity-[0.42] select-none"
           aria-hidden
           decoding="async"
         />
-        {/* Very light wash so text stays readable — does not cover the logo like the old 95% cream layer */}
-        <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-br from-ghee-cream/15 via-transparent to-ghee-warm/25" />
-        <div className="relative z-10 flex flex-col justify-center px-12 xl:px-16 py-16">
-          <p className="text-ghee-brown text-lg md:text-xl max-w-md leading-relaxed font-medium drop-shadow-sm">
-            Welcome to the home of pure A2 Desi Cow Ghee. Sign in to explore our premium collection and track your orders.
-          </p>
-        </div>
+        <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-br from-ghee-cream/10 via-transparent to-ghee-warm/15" />
       </div>
 
       {/* Right - Form */}
