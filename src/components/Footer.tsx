@@ -36,7 +36,7 @@ const Footer = () => {
             <h4 className="font-serif text-lg font-bold mb-6">Customer Care</h4>
             <ul className="space-y-4 text-sm text-ghee-cream/60">
               <li><Link to="/contact" className="hover:text-ghee-gold transition-colors">Contact Us</Link></li>
-              <li><Link to="/reviews" className="hover:text-ghee-gold transition-colors">Reviews</Link></li>
+              <li><Link to="/reviews" className="hover:text-ghee-gold transition-colors">Blogs &amp; Reviews</Link></li>
               <li><a href="#" className="hover:text-ghee-gold transition-colors">Shipping Policy</a></li>
               <li><a href="#" className="hover:text-ghee-gold transition-colors">Privacy Policy</a></li>
             </ul>

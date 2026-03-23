@@ -45,9 +45,12 @@ const Home = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="font-serif font-bold text-ghee-brown leading-[0.95] mb-8 text-5xl md:text-6xl lg:text-7xl"
+              className="font-serif font-bold text-ghee-brown leading-tight mb-8"
             >
-              Gavyansh: <span className="italic text-ghee-gold">Go the Vedic Way</span>
+              <span className="block text-4xl md:text-5xl lg:text-6xl tracking-tight">Gavyansh</span>
+              <span className="block mt-3 text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] font-bold italic text-ghee-gold">
+                Go the Vedic Way
+              </span>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -188,7 +191,6 @@ const Home = () => {
                   </div>
                   <div>
                     <h4 className="font-bold">{review.name}</h4>
-                    <p className="text-xs text-ghee-cream/40 uppercase tracking-widest">{review.date}</p>
                   </div>
                 </div>
               </div>

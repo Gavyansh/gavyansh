@@ -39,7 +39,7 @@ const Navbar = () => {
     { name: 'Benefits', path: '/benefits' },
     { name: 'About Us', path: '/about' },
     { name: 'Gallery', path: '/gallery' },
-    { name: 'Reviews', path: '/reviews' },
+    { name: 'Blogs & Reviews', path: '/reviews' },
     { name: 'Contact', path: '/contact' },
   ];
 

@@ -26,7 +26,7 @@ const Gallery = () => {
             transition={{ delay: 0.1 }}
             className="text-5xl md:text-6xl font-serif font-bold mt-4"
           >
-            From Farm to <span className="italic text-ghee-gold">Jar</span>
+            Pure Ghee, <span className="italic text-ghee-gold">Timeless wellness</span>
           </motion.h1>
         </div>
 
