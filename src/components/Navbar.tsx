@@ -57,7 +57,7 @@ const Navbar = () => {
               alt="Gavyansh"
               className="h-12 sm:h-14 w-auto max-w-[220px] object-contain object-left"
             />
-            <span className="text-[10px] sm:text-xs font-bold text-ghee-brown/85 tracking-[0.2em] uppercase">
+            <span className="text-[10px] sm:text-xs font-bold text-ghee-brown tracking-[0.2em] uppercase">
               Go the Vedic Way
             </span>
           </button>

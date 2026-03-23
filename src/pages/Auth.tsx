@@ -55,16 +55,22 @@ const Auth = () => {
         <title>Sign In | Gavyansh Vedic Ghee</title>
       </Helmet>
 
-      {/* Left — light logo watermark + welcome copy (logo lives in site header only) */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-ghee-cream">
-        <div
-          className="pointer-events-none absolute inset-0 bg-no-repeat bg-center opacity-[0.07] [background-size:min(92%,520px)]"
-          style={{ backgroundImage: `url(${LOGO_SRC})` }}
+      {/* Left — large light logo watermark (same file as header: public/images/GAVYANSH FINAL LOGO.png) */}
+      <div className="hidden lg:flex lg:w-1/2 lg:min-h-screen relative overflow-hidden bg-ghee-cream">
+        {/* Use <img> so the asset always loads; CSS bg was hidden by the old heavy overlay + tiny opacity */}
+        <img
+          src={LOGO_SRC}
+          alt=""
+          width={520}
+          height={520}
+          className="pointer-events-none absolute left-1/2 top-1/2 w-[min(92%,520px)] max-h-[min(70vh,520px)] -translate-x-1/2 -translate-y-1/2 object-contain opacity-[0.24] select-none"
           aria-hidden
+          decoding="async"
         />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-ghee-cream/95 via-ghee-cream/85 to-ghee-warm/70" />
+        {/* Very light wash so text stays readable — does not cover the logo like the old 95% cream layer */}
+        <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-br from-ghee-cream/15 via-transparent to-ghee-warm/25" />
         <div className="relative z-10 flex flex-col justify-center px-12 xl:px-16 py-16">
-          <p className="text-ghee-brown/90 text-lg md:text-xl max-w-md leading-relaxed font-medium">
+          <p className="text-ghee-brown text-lg md:text-xl max-w-md leading-relaxed font-medium drop-shadow-sm">
             Welcome to the home of pure A2 Desi Cow Ghee. Sign in to explore our premium collection and track your orders.
           </p>
         </div>
