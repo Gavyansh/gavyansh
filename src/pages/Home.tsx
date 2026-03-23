@@ -31,12 +31,13 @@ const Home = () => {
       <section className="relative min-h-[90vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&q=80&w=2000"
-            alt="Vedic Farm"
-            className="w-full h-full object-cover opacity-20"
-            referrerPolicy="no-referrer"
+            src="/gallery/G3.jpeg"
+            alt="Gavyansh — pure A2 ghee"
+            className="w-full h-full object-cover opacity-[0.26]"
+            loading="eager"
+            decoding="async"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-ghee-cream/0 via-ghee-cream/50 to-ghee-cream" />
+          <div className="absolute inset-0 bg-gradient-to-b from-ghee-cream/75 via-ghee-cream/55 to-ghee-cream" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-20">
