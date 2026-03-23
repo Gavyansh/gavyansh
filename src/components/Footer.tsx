@@ -16,7 +16,15 @@ const Footer = () => {
               Go the Vedic Way. Bringing the ancient wisdom of Ayurveda to your modern kitchen through traditionally churned, pure A2 Desi Cow Ghee.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="hover:text-ghee-gold transition-colors"><Instagram size={20} /></a>
+              <a
+                href="https://www.instagram.com/Gavyansh_india/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-ghee-gold transition-colors"
+                aria-label="Gavyansh on Instagram @Gavyansh_india"
+              >
+                <Instagram size={20} />
+              </a>
               <a href="#" className="hover:text-ghee-gold transition-colors"><Facebook size={20} /></a>
               <a href="#" className="hover:text-ghee-gold transition-colors"><Twitter size={20} /></a>
             </div>

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
+import { MessageCircle } from 'lucide-react';
 import { PRODUCTS as FALLBACK_PRODUCTS } from '../constants';
 import ProductCard from '../components/ProductCard';
 import { API_BASE } from '../api';
@@ -26,30 +28,51 @@ const Products = () => {
       </Helmet>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-20">
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-10 mb-20">
+          <div className="text-center lg:text-left flex-1 max-w-3xl mx-auto lg:mx-0">
+            <motion.span
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-ghee-gold font-bold tracking-[0.3em] uppercase text-xs"
+            >
+              The Collection
+            </motion.span>
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-5xl md:text-6xl font-serif font-bold mt-4"
+            >
+              Gavyansh <span className="italic text-ghee-gold">Vedic Ghee</span>
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-ghee-brown/60 max-w-2xl mx-auto lg:mx-0 mt-6"
+            >
+              Every jar of our ghee is a result of patience, tradition, and purity. Churned using the ancient Bilona method for maximum nutrition and flavor.
+            </motion.p>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-ghee-gold font-bold tracking-[0.3em] uppercase text-xs"
+            transition={{ delay: 0.15 }}
+            className="shrink-0 w-full max-w-sm mx-auto lg:mx-0 lg:text-right lg:self-start rounded-2xl border border-ghee-gold/20 bg-ghee-warm/50 p-6 md:p-7"
           >
-            The Collection
-          </motion.span>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-5xl md:text-6xl font-serif font-bold mt-4"
-          >
-            Gavyansh <span className="italic text-ghee-gold">Vedic Ghee</span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-ghee-brown/60 max-w-2xl mx-auto mt-6"
-          >
-            Every jar of our ghee is a result of patience, tradition, and purity. Churned using the ancient Bilona method for maximum nutrition and flavor.
-          </motion.p>
+            <p className="text-ghee-brown text-sm md:text-base font-medium leading-snug">
+              Want to do ghee business or place bulk order?{' '}
+              <span className="text-ghee-brown/90">Contact here.</span>
+            </p>
+            <Link
+              to="/contact"
+              className="mt-4 inline-flex items-center justify-center gap-2 w-full sm:w-auto lg:ml-auto rounded-xl bg-ghee-brown text-ghee-cream px-6 py-3 text-sm font-bold hover:bg-ghee-gold hover:text-ghee-brown transition-colors shadow-md"
+            >
+              <MessageCircle size={18} />
+              Contact us
+            </Link>
+          </motion.div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
