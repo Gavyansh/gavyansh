@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'motion/react';
 import { Mail, Lock, User, ArrowRight } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../authStore';
 import { API_BASE } from '../api';
 import { LOGO_SRC } from '../constants/branding';
@@ -55,27 +55,16 @@ const Auth = () => {
         <title>Sign In | Gavyansh Vedic Ghee</title>
       </Helmet>
 
-      {/* Left - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
-        <img
-          src="https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&q=80&w=1200"
-          alt="Vedic Farm"
-          className="absolute inset-0 w-full h-full object-cover opacity-40"
-          referrerPolicy="no-referrer"
+      {/* Left — light logo watermark + welcome copy (logo lives in site header only) */}
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-ghee-cream">
+        <div
+          className="pointer-events-none absolute inset-0 bg-no-repeat bg-center opacity-[0.07] [background-size:min(92%,520px)]"
+          style={{ backgroundImage: `url(${LOGO_SRC})` }}
+          aria-hidden
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-ghee-brown/90 via-ghee-brown/70 to-transparent" />
-        <div className="relative z-10 flex flex-col justify-center px-16">
-          <div className="mb-8">
-            <img
-              src={LOGO_SRC}
-              alt="Gavyansh"
-              className="h-16 w-auto max-w-[280px] object-contain object-left drop-shadow-md"
-            />
-            <span className="block text-xs font-bold text-ghee-gold tracking-[0.3em] uppercase mt-3">
-              Go the Vedic Way
-            </span>
-          </div>
-          <p className="text-ghee-cream/90 text-lg max-w-md leading-relaxed">
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-ghee-cream/95 via-ghee-cream/85 to-ghee-warm/70" />
+        <div className="relative z-10 flex flex-col justify-center px-12 xl:px-16 py-16">
+          <p className="text-ghee-brown/90 text-lg md:text-xl max-w-md leading-relaxed font-medium">
             Welcome to the home of pure A2 Desi Cow Ghee. Sign in to explore our premium collection and track your orders.
           </p>
         </div>
@@ -84,15 +73,6 @@ const Auth = () => {
       {/* Right - Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-ghee-cream">
         <div className="w-full max-w-md">
-          <div className="lg:hidden text-center mb-12">
-            <Link to="/" className="inline-flex flex-col items-center">
-              <img src={LOGO_SRC} alt="Gavyansh" className="h-14 w-auto max-w-[220px] object-contain" />
-              <span className="text-xs font-bold text-ghee-gold tracking-[0.2em] uppercase mt-2">
-                Go the Vedic Way
-              </span>
-            </Link>
-          </div>
-
           <div className="bg-white rounded-[32px] border border-ghee-gold/10 shadow-xl p-8 md:p-10">
             <div className="flex gap-2 mb-8 p-1 bg-ghee-warm rounded-xl">
               <button
