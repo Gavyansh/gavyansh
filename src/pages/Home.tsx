@@ -3,13 +3,15 @@ import { Helmet } from 'react-helmet-async';
 import { motion } from 'motion/react';
 import { ArrowRight, Star, Shield, Award, Leaf } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { BENEFITS, REVIEWS, PRODUCTS as FALLBACK_PRODUCTS } from '../constants';
+import { BENEFITS, PRODUCTS as FALLBACK_PRODUCTS } from '../constants';
 import { API_BASE } from '../api';
 import ProductCard from '../components/ProductCard';
 import { Product } from '../types';
+import { usePublicReviews } from '../hooks/usePublicReviews';
 
 const Home = () => {
   const [products, setProducts] = useState<Product[]>(FALLBACK_PRODUCTS);
+  const reviews = usePublicReviews();
 
   useEffect(() => {
     fetch(`${API_BASE}/api/products`)
@@ -179,7 +181,7 @@ const Home = () => {
             <h2 className="text-3xl md:text-4xl font-serif font-bold">What Our Customers Say</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {REVIEWS.map((review) => (
+            {reviews.map((review) => (
               <div key={review.id} className="bg-white/5 p-10 rounded-[32px] border border-white/10">
                 <div className="flex gap-1 mb-6">
                   {[...Array(review.rating)].map((_, i) => (

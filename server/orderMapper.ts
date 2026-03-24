@@ -30,5 +30,6 @@ export function orderToRecord(order: OrderWithItems): OrderRecord {
     createdAt: order.createdAt.toISOString(),
     shiprocketOrderId: order.shiprocketOrderId,
     awb: order.awb,
+    completed: order.completed,
   };
 }

@@ -16,7 +16,14 @@ import {
   handlePutAdminProduct,
   handleDeleteAdminProduct,
   handleGetAdminOrders,
+  handlePatchAdminOrderComplete,
 } from './server/api/admin';
+import {
+  handleGetReviews,
+  handlePostAdminReview,
+  handlePutAdminReview,
+  handleDeleteAdminReview,
+} from './server/api/reviews';
 import { bootstrapDatabase } from './server/bootstrapDb.js';
 
 dotenv.config();
@@ -31,6 +38,7 @@ async function startServer() {
   app.get('/api/health', handleHealth);
   app.get('/api/health/db', handleHealthDb);
   app.get('/api/products', handleProducts);
+  app.get('/api/reviews', handleGetReviews);
   app.post('/api/auth/signup', handleSignup);
   app.post('/api/auth/login', handleLogin);
   app.get('/api/orders', handleGetMyOrders);
@@ -39,6 +47,10 @@ async function startServer() {
   app.put('/api/admin/products/:id', handlePutAdminProduct);
   app.delete('/api/admin/products/:id', handleDeleteAdminProduct);
   app.get('/api/admin/orders', handleGetAdminOrders);
+  app.patch('/api/admin/orders/:id/complete', handlePatchAdminOrderComplete);
+  app.post('/api/admin/reviews', handlePostAdminReview);
+  app.put('/api/admin/reviews/:id', handlePutAdminReview);
+  app.delete('/api/admin/reviews/:id', handleDeleteAdminReview);
   app.post('/api/checkout', handleCheckout);
   app.post('/api/create-order', handleCreateOrder);
   app.post('/api/verify-payment', handleVerifyPayment);

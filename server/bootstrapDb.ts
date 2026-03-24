@@ -1,5 +1,6 @@
 import { prisma } from './db.js';
 import { DEFAULT_PRODUCTS } from './defaultProducts.js';
+import { DEFAULT_REVIEWS } from './defaultReviews.js';
 
 export async function bootstrapDatabase() {
   if (!process.env.DATABASE_URL) {
@@ -28,5 +29,21 @@ export async function bootstrapDatabase() {
       });
     }
     console.log('Database: seeded default products');
+  }
+
+  const reviewCount = await prisma.review.count();
+  if (reviewCount === 0) {
+    for (const r of DEFAULT_REVIEWS) {
+      await prisma.review.create({
+        data: {
+          id: r.id,
+          name: r.name,
+          rating: r.rating,
+          comment: r.comment,
+          date: r.date,
+        },
+      });
+    }
+    console.log('Database: seeded default reviews');
   }
 }

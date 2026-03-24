@@ -2,9 +2,10 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'motion/react';
 import { Star, Quote } from 'lucide-react';
-import { REVIEWS } from '../constants';
+import { usePublicReviews } from '../hooks/usePublicReviews';
 
 const Reviews = () => {
+  const reviews = usePublicReviews();
   return (
     <div className="pt-32 pb-24">
       <Helmet>
@@ -32,7 +33,7 @@ const Reviews = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          {REVIEWS.map((review, i) => (
+          {reviews.map((review, i) => (
             <motion.div
               key={review.id}
               initial={{ opacity: 0, y: 20 }}

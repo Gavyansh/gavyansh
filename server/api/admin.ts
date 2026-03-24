@@ -179,10 +179,25 @@ export async function handleDeleteAdminProduct(req: Request, res: Response) {
 
 export async function handleGetAdminOrders(_req: Request, res: Response) {
   const orders = await prisma.order.findMany({
+    where: { completed: false },
     include: { items: true },
     orderBy: { createdAt: 'desc' },
   });
 
   const asRecords: OrderRecord[] = orders.map((o) => orderToRecord(o));
   res.json({ success: true, orders: asRecords });
+}
+
+export async function handlePatchAdminOrderComplete(req: Request, res: Response) {
+  const { id } = req.params;
+
+  try {
+    const updated = await prisma.order.update({
+      where: { id },
+      data: { completed: true },
+    });
+    res.json({ success: true, id: updated.id });
+  } catch {
+    return res.status(404).json({ error: 'Order not found' });
+  }
 }

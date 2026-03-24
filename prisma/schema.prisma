@@ -43,8 +43,20 @@ model Order {
   total              Float
   shiprocketOrderId  String?
   awb                String?
+  /// When true, hidden from admin "active orders" list (fulfilled).
+  completed          Boolean     @default(false)
   createdAt          DateTime    @default(now())
   items              OrderItem[]
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  name      String
+  rating    Int
+  comment   String
+  /// Display date (e.g. YYYY-MM-DD)
+  date      String
+  createdAt DateTime @default(now())
 }
 
 model OrderItem {
