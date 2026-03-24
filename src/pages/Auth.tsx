@@ -70,11 +70,11 @@ const Auth = () => {
           alt=""
           width={520}
           height={520}
-          className="pointer-events-none absolute left-1/2 top-1/2 w-[min(92%,520px)] max-h-[min(70vh,520px)] -translate-x-1/2 -translate-y-1/2 object-contain opacity-[0.42] select-none"
+          className="pointer-events-none absolute left-1/2 top-1/2 w-[min(92%,520px)] max-h-[min(70vh,520px)] -translate-x-1/2 -translate-y-1/2 object-contain opacity-[0.62] brightness-[0.82] contrast-[1.05] select-none"
           aria-hidden
           decoding="async"
         />
-        <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-br from-ghee-cream/10 via-transparent to-ghee-warm/15" />
+        <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-br from-ghee-cream/5 via-transparent to-ghee-warm/10" />
       </div>
 
       {/* Right - Form */}
