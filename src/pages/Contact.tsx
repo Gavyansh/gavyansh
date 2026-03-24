@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { API_BASE } from '../api';
+import { CONTACT_PHONE_LABEL, CONTACT_PHONE_TEL, CONTACT_PHONE_WHATSAPP } from '../constants/branding';
 import { motion } from 'motion/react';
 import { Mail, Phone, MapPin, Clock, CheckCircle2, Loader2 } from 'lucide-react';
 import WhatsAppIcon from '../components/WhatsAppIcon';
@@ -82,10 +83,9 @@ const Contact = () => {
                   </div>
                   <div>
                     <p className="text-xs font-bold text-ghee-gold uppercase tracking-widest mb-1">Call Us</p>
-                    <div className="flex flex-col gap-1">
-                      <a href="tel:+919510416322" className="text-lg font-medium text-ghee-brown hover:text-ghee-gold transition-colors">+91 95104 16322</a>
-                      <a href="tel:+919521184898" className="text-lg font-medium text-ghee-brown hover:text-ghee-gold transition-colors">+91 95211 84898</a>
-                    </div>
+                    <a href={CONTACT_PHONE_TEL} className="text-lg font-medium text-ghee-brown hover:text-ghee-gold transition-colors">
+                      {CONTACT_PHONE_LABEL}
+                    </a>
                   </div>
                 </div>
 
@@ -128,7 +128,7 @@ const Contact = () => {
                 <h3 className="text-2xl font-serif font-bold mb-4">Direct Order?</h3>
                 <p className="text-ghee-cream/60 mb-8">Message us on WhatsApp for quick orders and bulk inquiries.</p>
                 <a
-                  href="https://wa.me/919510416322"
+                  href={`https://wa.me/${CONTACT_PHONE_WHATSAPP}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-[#25D366] text-white px-8 py-4 rounded-full font-bold hover:opacity-90 transition-all"

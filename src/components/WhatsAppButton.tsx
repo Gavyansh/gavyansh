@@ -1,9 +1,10 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import WhatsAppIcon from './WhatsAppIcon';
+import { CONTACT_PHONE_WHATSAPP } from '../constants/branding';
 
 const WhatsAppButton = () => {
-  const phoneNumber = '919510416322'; // Updated number
+  const phoneNumber = CONTACT_PHONE_WHATSAPP;
   const message = 'Hello! I would like to order some Gavyansh Vedic Ghee.';
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 

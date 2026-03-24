@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Instagram, Facebook, Twitter, Mail, Phone, MapPin } from 'lucide-react';
-import { LOGO_SRC } from '../constants/branding';
+import { LOGO_SRC, CONTACT_PHONE_LABEL, CONTACT_PHONE_TEL } from '../constants/branding';
 
 const Footer = () => {
   return (
@@ -59,7 +59,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={18} className="text-ghee-gold shrink-0" />
-                <a href="tel:+919510416322" className="hover:text-ghee-gold transition-colors">+91 95104 16322</a>
+                <a href={CONTACT_PHONE_TEL} className="hover:text-ghee-gold transition-colors">{CONTACT_PHONE_LABEL}</a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={18} className="text-ghee-gold shrink-0" />
