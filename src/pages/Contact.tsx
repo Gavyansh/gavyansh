@@ -82,7 +82,10 @@ const Contact = () => {
                   </div>
                   <div>
                     <p className="text-xs font-bold text-ghee-gold uppercase tracking-widest mb-1">Call Us</p>
-                    <a href="tel:+919510416322" className="text-lg font-medium text-ghee-brown hover:text-ghee-gold transition-colors">+91 95104 16322</a>
+                    <div className="flex flex-col gap-1">
+                      <a href="tel:+919510416322" className="text-lg font-medium text-ghee-brown hover:text-ghee-gold transition-colors">+91 95104 16322</a>
+                      <a href="tel:+919521184898" className="text-lg font-medium text-ghee-brown hover:text-ghee-gold transition-colors">+91 95211 84898</a>
+                    </div>
                   </div>
                 </div>
 
