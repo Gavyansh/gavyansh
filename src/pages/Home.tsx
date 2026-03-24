@@ -37,7 +37,8 @@ const Home = () => {
             loading="eager"
             decoding="async"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-ghee-cream/75 via-ghee-cream/55 to-ghee-cream" />
+          <div className="absolute inset-0 bg-ghee-brown/14" aria-hidden />
+          <div className="absolute inset-0 bg-gradient-to-b from-ghee-cream/72 via-ghee-cream/52 to-ghee-cream" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-20">
