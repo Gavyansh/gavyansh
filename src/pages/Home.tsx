@@ -39,8 +39,9 @@ const Home = () => {
             loading="eager"
             decoding="async"
           />
-          <div className="absolute inset-0 bg-ghee-brown/28" aria-hidden />
-          <div className="absolute inset-0 bg-gradient-to-b from-ghee-cream/58 via-ghee-cream/38 to-ghee-cream" />
+          <div className="absolute inset-0 bg-ghee-brown/38" aria-hidden />
+          <div className="absolute inset-0 bg-black/10" aria-hidden />
+          <div className="absolute inset-0 bg-gradient-to-b from-ghee-cream/46 via-ghee-cream/26 to-ghee-cream" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-20">
@@ -62,7 +63,7 @@ const Home = () => {
               transition={{ delay: 0.2 }}
               className="text-lg md:text-xl text-ghee-brown/70 mb-10 leading-relaxed"
             >
-              Experience the authentic taste of A2 Desi Cow Ghee, traditionally churned using the Bilona method from grass-fed Gir cows.
+              Experience the authentic taste of A2 Desi Cow Ghee, traditionally churned using the Bilona method from grass-fed cows.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
