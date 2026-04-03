@@ -10,7 +10,7 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
+  const [selectedVariant, setSelectedVariant] = useState(() => product.variants[0]);
   const addItem = useCartStore((state) => state.addItem);
   const [isAdded, setIsAdded] = useState(false);
   const gallery = getProductImages(product);
@@ -18,6 +18,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   useEffect(() => {
     setImgIdx(0);
   }, [product.id, gallery.join('|')]);
+
+  const variantsKey = product.variants.map((v) => `${v.weight}:${v.price}`).join('|');
+
+  // When products load from the API (or admin updates), `product.variants` changes but
+  // useState keeps the old variant object — so the price stays stale until the user toggles size.
+  useEffect(() => {
+    setSelectedVariant((prev) => {
+      const match = product.variants.find((v) => v.weight === prev.weight);
+      return match ?? product.variants[0];
+    });
+  }, [product.id, variantsKey]);
 
   const handleAddToCart = () => {
     addItem(product, selectedVariant);

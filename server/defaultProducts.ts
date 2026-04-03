@@ -9,7 +9,7 @@ export const DEFAULT_PRODUCTS = [
     images: ['/images/D2.jpeg'],
     benefits: ['Rich in A2 Protein', 'Bilona Method', 'No Preservatives'],
     variants: [
-      { weight: '500ml', price: 850 },
+      { weight: '500ml', price: 1050 },
       { weight: '1L', price: 1600 },
     ],
   },
@@ -22,7 +22,7 @@ export const DEFAULT_PRODUCTS = [
     images: ['/images/D1.jpeg'],
     benefits: ['Pure Gir Cow Milk', 'Traditionally Churned', 'Superior Taste'],
     variants: [
-      { weight: '500ml', price: 950 },
+      { weight: '500ml', price: 1350 },
       { weight: '1L', price: 1800 },
     ],
   },
